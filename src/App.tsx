@@ -42,6 +42,23 @@ export default function App() {
         <a href="https://github.com/Wanyaldee/blueqat-mcp-playground">blueqat-mcp-playground</a>{" "}
         を参照してください。{" "}
         <a href="https://github.com/Wanyaldee/quantum-visualizer">ソースコード</a>
+        <p className="colophon-meta">
+          <strong>プライバシー:</strong> このサイトは Cookie
+          やアクセス解析を使わず、操作内容や読み込んだ JSON
+          をどこにも送信しません。ただし、フォントの取得元の Google Fonts と配信元の GitHub Pages
+          には、通常のアクセスと同じく IP アドレスなどが届きます（
+          <a href="https://policies.google.com/privacy?hl=ja">Google</a>・
+          <a href="https://docs.github.com/ja/site-policy/privacy-policies/github-general-privacy-statement">
+            GitHub
+          </a>{" "}
+          のプライバシーポリシー）。
+        </p>
+        <p className="colophon-meta">
+          © 2026 Wanyaldee ·{" "}
+          <a href="https://github.com/Wanyaldee/quantum-visualizer/blob/main/LICENSE">
+            MIT License
+          </a>
+        </p>
       </footer>
     </div>
   );

@@ -823,6 +823,10 @@ textarea {
   max-width: 60em;
 }
 
+.colophon-meta {
+  margin: 8px 0 0;
+}
+
 .colophon a,
 .lede a {
   color: var(--ink-2);
