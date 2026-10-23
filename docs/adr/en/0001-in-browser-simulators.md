@@ -1,5 +1,7 @@
 # 0001: Gate-model and annealing visualizers backed by in-browser exact simulators
 
+[日本語](../ja/0001-in-browser-simulators.md)
+
 ## Context
 
 The app exists to show workshop attendees (and the author) _how_ a quantum computer arrives
@@ -170,14 +172,29 @@ Browser checks (headless Chromium via Playwright against `vp preview`):
 - Screenshots at 1280px light, 1280px dark, 390px phone: Grover step 3 and end, MaxCut at
   T=20 and T=1, team split at T=300 / s=0.55. No console errors. Fixed from these: title
   orphan line, gap marker at s=0, graph labels over edges, unreadable charts on phones
-  (now scroll horizontally above 520px min width).
+  (the two wide charts now keep a 520px minimum width and scroll horizontally).
 - Gate editor adds H → 50 %/50 %; pasted `run_circuit` object loads 3 qubits / 8 dials;
   unsupported gate `u` shows `1番目のゲート: 未対応のゲート "u"`; pasted QUBO loads and
   marks both optima; page `scrollWidth` = 390 on a 390px viewport in both modes.
   Verified-by: Claude Opus 5.5 (AI agent), 2026-10-23
 
+Deploy:
+
+- **Operation:** GitHub Pages deploy of commit `1b4675f` by `.github/workflows/deploy.yml`
+  **Intent:** https://wanyaldee.github.io/quantum-visualizer/ serves this build
+  **Target:** GitHub Pages, `Wanyaldee/quantum-visualizer`
+  **Run by:** GitHub Actions run 39890402877 (pushed by Claude Opus 5.5, AI agent), 2026-10-23
+
+  ```
+  $ gh run view 39890402877 --json conclusion,headSha,updatedAt
+  success 1b4675f 2026-10-23T02:36:04Z
+  ```
+
+  Verified-by: Claude Opus 5.5 (AI agent), 2026-10-23 — opened
+  `https://wanyaldee.github.io/quantum-visualizer/#anneal` in headless Chromium: title
+  `量子のふるまい`, heading `グラフを2色に塗り分ける（MaxCut）`, 0 page errors
+
 Not verified:
 
 - Viewing on a real phone/projector, and keyboard-only operation end to end.
 - Human review of the physics narration texts (`src/presets/*.ts`).
-- The GitHub Pages deploy itself (runs after this commit).

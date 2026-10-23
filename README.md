@@ -15,7 +15,7 @@
   エネルギー準位と状態の居場所、答えごとの確率、アニーリング時間と正解率の関係を見る。
   MaxCut・チーム分け（playground 例14）・フラストレーション三角形のプリセット、blueqat `run_qaoa` 形式の QUBO 読み込み。
 
-設計判断は [docs/adr/0001-in-browser-simulators.md](docs/adr/0001-in-browser-simulators.md) を参照。
+設計判断は ADR を参照（[日本語](docs/adr/ja/0001-in-browser-simulators.md) / [English](docs/adr/en/0001-in-browser-simulators.md)）。
 
 ## 方針
 
