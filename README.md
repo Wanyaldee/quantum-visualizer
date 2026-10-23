@@ -5,6 +5,18 @@
 
 量子回路の題材・実行結果は [blueqat-mcp-playground](https://github.com/Wanyaldee/blueqat-mcp-playground) を参照。
 
+公開ページ: https://wanyaldee.github.io/quantum-visualizer/
+
+## できること
+
+- **ゲート式**（`#gate`）: 回路を1ゲートずつ進め、各状態の確率（円の面積）と位相（針・色）がどう変わるかを見る。
+  ベル状態・GHZ・グローバー・超高密度符号化などのプリセット、ゲートの追加、blueqat `run_circuit` 形式の JSON 読み込み、測定のサンプリング。
+- **アニーリング**（`#anneal`）: 横磁場から問題へ少しずつ切り替える量子アニーリングを厳密に計算し、
+  エネルギー準位と状態の居場所、答えごとの確率、アニーリング時間と正解率の関係を見る。
+  MaxCut・チーム分け（playground 例14）・フラストレーション三角形のプリセット、blueqat `run_qaoa` 形式の QUBO 読み込み。
+
+設計判断は [docs/adr/0001-in-browser-simulators.md](docs/adr/0001-in-browser-simulators.md) を参照。
+
 ## 方針
 
 - 計算はブラウザ内の小さな状態ベクトルシミュレータで行う（外部 API・キー不要、オフラインでも動く）
@@ -18,6 +30,7 @@
 vp install      # 依存関係のインストール
 vp dev          # 開発サーバー
 vp check        # format / lint / 型チェック
+vp test         # シミュレータのテスト
 vp run build    # 本番ビルド（dist/）
 ```
 

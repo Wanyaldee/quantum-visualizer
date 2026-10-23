@@ -1,0 +1,869 @@
+:root {
+  --phase-l: 0.6;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --phase-l: 0.68;
+  }
+}
+
+.page {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 32px 24px 48px;
+}
+
+/* ---------- masthead & mode switch ---------- */
+
+.masthead h1 {
+  font-size: clamp(1.6rem, 3.6vw, 2.5rem);
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  text-wrap: balance;
+  word-break: auto-phrase;
+}
+
+.modes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-top: 24px;
+  border-bottom: 2px solid var(--rule);
+}
+
+.modes a {
+  display: grid;
+  gap: 2px;
+  padding: 12px 16px 14px;
+  color: var(--ink-3);
+  text-decoration: none;
+  border-bottom: 4px solid transparent;
+  margin-bottom: -2px;
+}
+
+.modes a:hover {
+  color: var(--ink-2);
+}
+
+.modes a[aria-current="page"] {
+  color: var(--ink);
+  border-bottom-color: var(--amp);
+}
+
+.mode-name {
+  font-family: var(--serif);
+  font-size: 1.35rem;
+  font-weight: 600;
+}
+
+.mode-hint {
+  font-size: 0.85rem;
+}
+
+/* ---------- shared lab layout ---------- */
+
+.lab {
+  margin-top: 20px;
+}
+
+.presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  border: 1px solid var(--rule);
+  background: transparent;
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  color: var(--ink-2);
+}
+
+.chip:hover {
+  border-color: var(--ink-3);
+  color: var(--ink);
+}
+
+.chip[aria-pressed="true"] {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--surface);
+}
+
+.chip-small {
+  padding: 3px 10px;
+  font-size: 0.8rem;
+}
+
+.stage {
+  margin-top: 16px;
+  background: var(--surface);
+  border-radius: 14px;
+  padding: 28px 28px 24px;
+}
+
+.stage-head h2 {
+  font-size: 1.5rem;
+  text-wrap: balance;
+  word-break: auto-phrase;
+}
+
+.lede {
+  margin-top: 6px;
+  color: var(--ink-2);
+  max-width: 44em;
+}
+
+.note {
+  margin-top: 12px;
+  padding: 12px 16px;
+  border-left: 3px solid var(--amp);
+  background: color-mix(in oklab, var(--amp) 7%, transparent);
+  border-radius: 0 8px 8px 0;
+  min-height: 3.4em;
+  max-width: 48em;
+}
+
+.panel-title {
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+}
+
+.panel-text,
+.panel-foot,
+.chart-foot {
+  color: var(--ink-2);
+  font-size: 0.88rem;
+}
+
+.panel-foot,
+.chart-foot {
+  margin-top: 8px;
+}
+
+.btn {
+  border: 1px solid var(--rule);
+  background: var(--bg);
+  border-radius: 8px;
+  padding: 7px 14px;
+  cursor: pointer;
+  font-size: 0.92rem;
+}
+
+.btn:hover:not(:disabled) {
+  border-color: var(--ink-3);
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.btn-primary {
+  background: var(--amp);
+  border-color: var(--amp);
+  color: #fff;
+  font-weight: 500;
+}
+
+.btn-primary:hover:not(:disabled) {
+  border-color: var(--ink);
+}
+
+.btn-measure {
+  background: transparent;
+  border-color: var(--measure);
+  color: var(--ink);
+  font-weight: 500;
+}
+
+/* ---------- circuit ---------- */
+
+.circuit-scroll {
+  margin-top: 20px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.circuit {
+  display: block;
+}
+
+.wire {
+  stroke: var(--ink-3);
+  stroke-width: 1.5;
+}
+
+.wire-label {
+  fill: var(--ink-2);
+  font-size: 13px;
+}
+
+.gate {
+  cursor: pointer;
+}
+
+.gate-hit {
+  fill: transparent;
+}
+
+.gate:hover .gate-hit {
+  fill: color-mix(in oklab, var(--amp) 8%, transparent);
+}
+
+.gate-box {
+  fill: var(--surface);
+  stroke: var(--ink-3);
+  stroke-width: 1.5;
+}
+
+.gate-text {
+  fill: var(--ink-2);
+  font: 600 13px var(--mono);
+}
+
+.gate-link,
+.gate-target path,
+.gate-x {
+  stroke: var(--ink-3);
+  stroke-width: 1.8;
+  fill: none;
+}
+
+.gate-target circle {
+  fill: var(--surface);
+  stroke: var(--ink-3);
+  stroke-width: 1.8;
+}
+
+.gate-dot {
+  fill: var(--ink-3);
+}
+
+.gate[data-done] .gate-box,
+.gate[data-done] .gate-target circle,
+.gate[data-done] .gate-link,
+.gate[data-done] .gate-target path,
+.gate[data-done] .gate-x {
+  stroke: var(--ink);
+}
+
+.gate[data-done] .gate-dot {
+  fill: var(--ink);
+}
+
+.gate[data-done] .gate-text {
+  fill: var(--ink);
+}
+
+.gate[data-current] .gate-box,
+.gate[data-current] .gate-target circle {
+  stroke: var(--amp);
+  stroke-width: 2.5;
+}
+
+.cursor {
+  stroke: var(--amp);
+  stroke-width: 2;
+  stroke-dasharray: 4 4;
+  transition: all 300ms ease;
+}
+
+.cursor-hover {
+  stroke: var(--ink-3);
+  stroke-width: 1;
+  transition: none;
+}
+
+.stepper {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.stepper-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.step-count {
+  color: var(--ink-2);
+}
+
+/* ---------- amplitude dials ---------- */
+
+.state-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  gap: 32px;
+  margin-top: 28px;
+}
+
+.dials {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: 14px 10px;
+}
+
+.dials-n4,
+.dials-n5 {
+  grid-template-columns: repeat(auto-fill, minmax(68px, 1fr));
+}
+
+.dial {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+}
+
+.dial svg {
+  width: 100%;
+  max-width: 96px;
+  overflow: visible;
+}
+
+.dial-ring {
+  fill: none;
+  stroke: var(--rule);
+  stroke-width: 1.5;
+}
+
+.dial-disc {
+  transition:
+    r 450ms cubic-bezier(0.3, 0.7, 0.3, 1),
+    fill 450ms ease;
+}
+
+.dial-needle {
+  transition:
+    transform 450ms cubic-bezier(0.3, 0.7, 0.3, 1),
+    opacity 300ms;
+}
+
+.dial-needle line {
+  stroke: var(--ink);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.dial-needle circle {
+  fill: var(--ink);
+}
+
+.dial .ket {
+  font-size: 0.9rem;
+}
+
+.dial-p {
+  font-size: 0.8rem;
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.dial[data-live] .dial-p {
+  color: var(--ink);
+}
+
+.phase-legend {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0 0;
+  font-size: 0.85rem;
+  color: var(--ink-2);
+}
+
+.phase-legend svg {
+  width: 88px;
+  flex: none;
+}
+
+.phase-legend text {
+  fill: var(--ink-3);
+  font: 9px var(--mono);
+}
+
+.legend-arc {
+  fill: none;
+  stroke-width: 7;
+}
+
+/* ---------- measurement ---------- */
+
+.measure-panel .btn-measure {
+  margin-top: 12px;
+}
+
+.measure {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 14px;
+  font-size: 0.88rem;
+}
+
+.measure th {
+  text-align: left;
+  font-weight: 500;
+  padding: 3px 10px 3px 0;
+  width: 1%;
+  white-space: nowrap;
+}
+
+.measure-track {
+  position: relative;
+  height: 22px;
+}
+
+.measure-bar {
+  position: absolute;
+  left: 0;
+  top: 4px;
+  bottom: 4px;
+  background: var(--measure);
+  border-radius: 0 4px 4px 0;
+}
+
+.measure-tick {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--ink);
+}
+
+.measure-n {
+  width: 1%;
+  padding-left: 10px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-2);
+}
+
+/* ---------- editor ---------- */
+
+.editor {
+  margin-top: 28px;
+  border-top: 1px solid var(--rule);
+  padding-top: 14px;
+}
+
+.editor summary {
+  cursor: pointer;
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 1.05rem;
+}
+
+.editor-body {
+  display: grid;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.field-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 10px 14px;
+}
+
+.field-row label,
+.json-field {
+  display: grid;
+  gap: 4px;
+  font-size: 0.82rem;
+  color: var(--ink-2);
+}
+
+select,
+input[type="number"],
+textarea {
+  border: 1px solid var(--rule);
+  background: var(--bg);
+  border-radius: 6px;
+  padding: 6px 8px;
+  color: var(--ink);
+}
+
+input[type="number"] {
+  width: 6em;
+}
+
+textarea {
+  font: 0.85rem/1.5 var(--mono);
+  width: 100%;
+  resize: vertical;
+}
+
+.hint-error {
+  color: var(--ink);
+  font-size: 0.85rem;
+  padding-left: 22px;
+  position: relative;
+}
+
+.hint-error::before {
+  content: "!";
+  position: absolute;
+  left: 0;
+  top: 0.15em;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--measure);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+}
+
+/* ---------- annealing ---------- */
+
+.anneal-controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 32px;
+  margin-top: 20px;
+}
+
+.control {
+  display: grid;
+  gap: 6px;
+}
+
+.control label {
+  font-weight: 500;
+}
+
+.control input[type="range"] {
+  width: 100%;
+  accent-color: var(--amp);
+}
+
+.speed-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.anneal-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  gap: 28px 32px;
+  margin-top: 24px;
+  align-items: start;
+}
+
+.chart {
+  margin: 0;
+}
+
+.chart-title {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 1.05rem;
+  margin-bottom: 8px;
+}
+
+.chart-scroll {
+  overflow-x: auto;
+}
+
+.chart-wrap {
+  position: relative;
+}
+
+.chart svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.grid {
+  stroke: var(--grid);
+  stroke-width: 1;
+}
+
+.baseline {
+  stroke: var(--ink-3);
+  stroke-width: 1;
+}
+
+.axis-label {
+  fill: var(--ink-3);
+  font: 11px var(--sans);
+  font-variant-numeric: tabular-nums;
+}
+
+.axis-title {
+  fill: var(--ink-2);
+  font: 11px var(--sans);
+}
+
+.hit {
+  fill: transparent;
+  cursor: crosshair;
+}
+
+.level {
+  fill: none;
+  stroke: var(--ink-3);
+  stroke-width: 1.5;
+  opacity: 0.55;
+}
+
+.level-answer {
+  stroke: var(--answer);
+  stroke-width: 2;
+  opacity: 1;
+}
+
+.pop-dot {
+  fill: var(--amp);
+  fill-opacity: 0.85;
+  stroke: var(--surface);
+  stroke-width: 2;
+  transition:
+    cx 120ms linear,
+    cy 120ms linear,
+    r 200ms ease;
+}
+
+.gap-mark line {
+  stroke: var(--ink);
+  stroke-width: 1.5;
+  marker-start: none;
+}
+
+.gap-mark text {
+  fill: var(--ink-2);
+  font: 11px var(--sans);
+}
+
+.bar {
+  fill: var(--amp);
+}
+
+.bar-answer {
+  fill: var(--answer);
+}
+
+[data-hover] .bar {
+  fill-opacity: 0.75;
+}
+
+.bar-label {
+  fill: var(--ink-3);
+  font-size: 10px;
+}
+
+.bar-label[data-answer] {
+  fill: var(--ink);
+}
+
+.series {
+  fill: none;
+  stroke: var(--answer);
+  stroke-width: 2;
+}
+
+.series-dot {
+  fill: var(--answer);
+  stroke: var(--surface);
+  stroke-width: 2;
+}
+
+.current-dot {
+  fill: var(--surface);
+  stroke: var(--amp);
+  stroke-width: 3;
+}
+
+.graph {
+  margin: 0;
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+}
+
+.graph svg {
+  width: 100%;
+  max-width: 280px;
+}
+
+.graph figcaption {
+  font-size: 0.85rem;
+  color: var(--ink-2);
+  text-align: center;
+}
+
+.edge {
+  stroke: var(--ink-3);
+  stroke-width: 2;
+}
+
+.edge[data-split] {
+  stroke: var(--ink);
+  stroke-width: 3;
+}
+
+.node circle {
+  fill: var(--bg);
+  stroke: var(--ink-3);
+  stroke-width: 2;
+  transition: fill 250ms ease;
+}
+
+.node text {
+  fill: var(--ink);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.node[data-bit="1"] circle {
+  fill: var(--amp);
+  stroke: var(--amp);
+}
+
+.node[data-bit="0"] circle {
+  fill: var(--measure);
+  stroke: var(--measure);
+}
+
+.node[data-bit] > text:not(.node-tag) {
+  fill: #fff;
+}
+
+.node-tag {
+  fill: var(--ink-2) !important;
+  font-size: 11px !important;
+}
+
+.answers {
+  margin-top: 28px;
+}
+
+.answers ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.answers li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 14px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: var(--bg);
+}
+
+.answer-p {
+  font-variant-numeric: tabular-nums;
+  min-width: 4em;
+}
+
+.tip-answer {
+  color: var(--answer);
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+/* ---------- tooltip ---------- */
+
+.tooltip {
+  position: absolute;
+  transform: translateX(12px);
+  display: grid;
+  gap: 2px;
+  min-width: 140px;
+  padding: 8px 10px;
+  background: var(--ink);
+  color: var(--surface);
+  border-radius: 8px;
+  font-size: 0.8rem;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.tooltip[data-flip] {
+  transform: translateX(calc(-100% - 12px));
+}
+
+.tooltip em {
+  font-style: normal;
+  opacity: 0.7;
+}
+
+.tooltip .tip-answer {
+  color: color-mix(in oklab, var(--answer) 70%, white);
+}
+
+/* ---------- footer ---------- */
+
+.colophon {
+  margin-top: 32px;
+  font-size: 0.82rem;
+  color: var(--ink-3);
+  max-width: 60em;
+}
+
+.colophon a,
+.lede a {
+  color: var(--ink-2);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---------- narrow screens ---------- */
+
+@media (max-width: 820px) {
+  .page {
+    padding: 20px 16px 40px;
+  }
+
+  .stage {
+    padding: 20px 16px;
+  }
+
+  .state-grid,
+  .anneal-grid,
+  .anneal-controls {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .modes a {
+    padding: 10px 8px 12px;
+  }
+
+  .mode-hint {
+    font-size: 0.75rem;
+  }
+
+  /* Below this width the charts' text would shrink with the viewBox; scroll instead. */
+  .chart-wrap-wide {
+    min-width: 520px;
+  }
+}

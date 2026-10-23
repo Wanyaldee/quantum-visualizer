@@ -1,102 +1,48 @@
-import { useState } from "react";
-import heroImg from "./assets/hero.png";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "./assets/vite.svg";
-import "./App.css";
+import { useEffect, useState } from "react";
+import { AnnealLab } from "./anneal/AnnealLab";
+import { GateLab } from "./gate/GateLab";
 
-function App() {
-  const [count, setCount] = useState(0);
+type Mode = "gate" | "anneal";
+
+// The mode lives in the URL hash so a workshop host can hand out a link that opens
+// straight into annealing (…/#anneal).
+const modeFromHash = (): Mode => (location.hash === "#anneal" ? "anneal" : "gate");
+
+export default function App() {
+  const [mode, setMode] = useState<Mode>(modeFromHash);
+
+  useEffect(() => {
+    const onHash = () => setMode(modeFromHash());
+    addEventListener("hashchange", onHash);
+    return () => removeEventListener("hashchange", onHash);
+  }, []);
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button type="button" className="counter" onClick={() => setCount((count) => count + 1)}>
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg className="button-icon" role="presentation" aria-hidden="true">
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg className="button-icon" role="presentation" aria-hidden="true">
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg className="button-icon" role="presentation" aria-hidden="true">
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg className="button-icon" role="presentation" aria-hidden="true">
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+    <div className="page">
+      <header className="masthead">
+        <h1>量子コンピュータは、どうやって答えを出すのか</h1>
+        <nav className="modes" aria-label="方式">
+          <a href="#gate" aria-current={mode === "gate" ? "page" : undefined}>
+            <span className="mode-name">ゲート式</span>
+            <span className="mode-hint">回路で波を重ねて、答えの確率を育てる</span>
+          </a>
+          <a href="#anneal" aria-current={mode === "anneal" ? "page" : undefined}>
+            <span className="mode-name">アニーリング</span>
+            <span className="mode-hint">ゆっくり問題に切り替えて、一番低い所に落ち着かせる</span>
+          </a>
+        </nav>
+      </header>
+      <main>{mode === "gate" ? <GateLab /> : <AnnealLab />}</main>
+      <footer className="colophon">
+        計算はすべてこのブラウザの中で行う、ノイズのない理想的なシミュレーションです。実機との違いは{" "}
+        <a href="https://github.com/Wanyaldee/blueqat-mcp-playground/blob/main/docs/simulator_vs_hardware.md">
+          シミュレータと実機の違い
+        </a>
+        、題材の回路や QUBO は{" "}
+        <a href="https://github.com/Wanyaldee/blueqat-mcp-playground">blueqat-mcp-playground</a>{" "}
+        を参照してください。{" "}
+        <a href="https://github.com/Wanyaldee/quantum-visualizer">ソースコード</a>
+      </footer>
+    </div>
   );
 }
-
-export default App;
