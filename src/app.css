@@ -25,7 +25,7 @@
 
 .modes {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   margin-top: 24px;
   border-bottom: 2px solid var(--rule);
 }
@@ -784,6 +784,163 @@ textarea {
   font-size: 0.85rem;
 }
 
+/* ---------- link back to the playground ---------- */
+
+.example-link {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin: 8px 0 0;
+  font-size: 0.85rem;
+  color: var(--ink-3);
+}
+
+.example-link a,
+.learn a:not(.btn) {
+  color: var(--amp);
+}
+
+/* ---------- examples & basics page ---------- */
+
+.learn .stage + .stage {
+  margin-top: 20px;
+}
+
+.learn-section h2 {
+  font-size: 1.5rem;
+}
+
+.terms {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.term {
+  background: var(--bg);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+
+.term h3 {
+  font-size: 1.05rem;
+}
+
+.term p,
+.term ul {
+  margin: 6px 0 0;
+  font-size: 0.92rem;
+  color: var(--ink-2);
+}
+
+.term code,
+.example-tools code {
+  font-family: var(--mono);
+  font-size: 0.85em;
+}
+
+.gate-list {
+  padding-left: 0;
+  list-style: none;
+  display: grid;
+  gap: 2px;
+}
+
+.gate-list code {
+  display: inline-block;
+  min-width: 2.6em;
+  color: var(--ink);
+}
+
+.term-foot {
+  font-size: 0.82rem !important;
+}
+
+.example-group {
+  margin-top: 28px;
+}
+
+.example-group h3 {
+  font-size: 1.15rem;
+}
+
+.examples {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.example {
+  display: grid;
+  grid-template-columns: 2.4em minmax(0, 1fr);
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 10px;
+  background: var(--bg);
+}
+
+.example-no {
+  font-family: var(--serif);
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--ink-3);
+  text-align: right;
+}
+
+.example h4 {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.example p {
+  margin: 4px 0 0;
+  font-size: 0.92rem;
+  color: var(--ink-2);
+}
+
+.example-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.example-tools code {
+  color: var(--ink-3);
+}
+
+.example-missing {
+  color: var(--ink-3) !important;
+}
+
+.example-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  margin-top: 10px !important;
+}
+
+.example-actions .btn {
+  text-decoration: none;
+  font-size: 0.85rem;
+}
+
+.example-actions .btn:not(.btn-primary) {
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.example-related {
+  font-size: 0.82rem !important;
+  color: var(--ink-3) !important;
+}
+
 /* ---------- tooltip ---------- */
 
 .tooltip {
@@ -866,8 +1023,37 @@ textarea {
     font-size: 0.75rem;
   }
 
+  .mode-name {
+    font-size: 1.1rem;
+  }
+
   /* Below this width the charts' text would shrink with the viewBox; scroll instead. */
   .chart-wrap-wide {
     min-width: 520px;
+  }
+}
+
+/* Three tabs on a phone: keep "アニーリング" on one line. */
+@media (max-width: 480px) {
+  .modes a {
+    padding: 8px 4px 10px;
+  }
+
+  .mode-name {
+    font-size: 0.95rem;
+  }
+
+  .mode-hint {
+    display: none;
+  }
+
+  .example {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2px;
+  }
+
+  .example-no {
+    text-align: left;
+    font-size: 1.1rem;
   }
 }

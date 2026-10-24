@@ -1,18 +1,36 @@
 import { useEffect, useState } from "react";
 import { AnnealLab } from "./anneal/AnnealLab";
 import { GateLab } from "./gate/GateLab";
+import { LearnPage } from "./learn/LearnPage";
 
-type Mode = "gate" | "anneal";
+type Mode = "gate" | "anneal" | "learn";
 
-// The mode lives in the URL hash so a workshop host can hand out a link that opens
-// straight into annealing (…/#anneal).
-const modeFromHash = (): Mode => (location.hash === "#anneal" ? "anneal" : "gate");
+interface Route {
+  mode: Mode;
+  preset?: string;
+  /** Counts hash changes. Preset chips rewrite the hash with replaceState (no event), so
+   * the preset id alone may not change when a link leads back to it. */
+  visit: number;
+}
+
+// The view lives in the URL hash so a workshop host can hand out a link that opens
+// straight into one preset (…/#anneal/team), and the example list can link to each one.
+function routeFromHash(visit = 0): Route {
+  const [mode, preset] = location.hash.slice(1).split("/");
+  if (mode === "anneal" || mode === "learn") return { mode, preset, visit };
+  return { mode: "gate", preset, visit };
+}
 
 export default function App() {
-  const [mode, setMode] = useState<Mode>(modeFromHash);
+  const [route, setRoute] = useState<Route>(() => routeFromHash());
+  const { mode, preset, visit } = route;
 
   useEffect(() => {
-    const onHash = () => setMode(modeFromHash());
+    const onHash = () => {
+      setRoute((r) => routeFromHash(r.visit + 1));
+      // Links from the long example list would otherwise land mid-page.
+      scrollTo({ top: 0 });
+    };
     addEventListener("hashchange", onHash);
     return () => removeEventListener("hashchange", onHash);
   }, []);
@@ -30,9 +48,18 @@ export default function App() {
             <span className="mode-name">アニーリング</span>
             <span className="mode-hint">ゆっくり問題に切り替えて、一番低い所に落ち着かせる</span>
           </a>
+          <a href="#learn" aria-current={mode === "learn" ? "page" : undefined}>
+            <span className="mode-name">使用例と基礎</span>
+            <span className="mode-hint">playground の全使用例と、読むための最低限の知識</span>
+          </a>
         </nav>
       </header>
-      <main>{mode === "gate" ? <GateLab /> : <AnnealLab />}</main>
+      <main>
+        {/* Keyed by visit so following a link to a preset starts that lab fresh. */}
+        {mode === "gate" && <GateLab key={visit} initialPreset={preset} />}
+        {mode === "anneal" && <AnnealLab key={visit} initialPreset={preset} />}
+        {mode === "learn" && <LearnPage />}
+      </main>
       <footer className="colophon">
         計算はすべてこのブラウザの中で行う、ノイズのない理想的なシミュレーションです。実機との違いは{" "}
         <a href="https://github.com/Wanyaldee/blueqat-mcp-playground/blob/main/docs/simulator_vs_hardware.md">

@@ -5,12 +5,15 @@ import { AmplitudeDials, PhaseLegend } from "./AmplitudeDials";
 import { CircuitDiagram } from "./CircuitDiagram";
 import { GateEditor } from "./GateEditor";
 import { MeasureBars } from "./MeasureBars";
+import { ExampleLink } from "../ui/ExampleLink";
+import { rememberPreset } from "../ui/route";
 
 const SHOTS = 1000;
 const PLAY_MS = 1100;
 
 interface Circuit {
   presetId: string | null;
+  example?: number;
   title: string;
   summary: string;
   n: number;
@@ -22,6 +25,7 @@ const fromPreset = (id: string): Circuit => {
   const p = CIRCUIT_PRESETS.find((c) => c.id === id) ?? CIRCUIT_PRESETS[0];
   return {
     presetId: p.id,
+    example: p.example,
     title: p.title,
     summary: p.summary,
     n: p.n,
@@ -55,8 +59,10 @@ function describeGate(g: Gate): string {
   }
 }
 
-export function GateLab() {
-  const [circuit, setCircuit] = useState<Circuit>(() => fromPreset(CIRCUIT_PRESETS[0].id));
+export function GateLab({ initialPreset }: { initialPreset?: string }) {
+  const [circuit, setCircuit] = useState<Circuit>(() =>
+    fromPreset(initialPreset ?? CIRCUIT_PRESETS[0].id),
+  );
   const [step, setStep] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [counts, setCounts] = useState<Uint32Array | null>(null);
@@ -104,7 +110,10 @@ export function GateLab() {
             type="button"
             className="chip"
             aria-pressed={circuit.presetId === p.id}
-            onClick={() => replace(fromPreset(p.id))}
+            onClick={() => {
+              replace(fromPreset(p.id));
+              rememberPreset("gate", p.id);
+            }}
           >
             {p.title}
           </button>
@@ -115,6 +124,7 @@ export function GateLab() {
         <header className="stage-head">
           <h2>{circuit.title}</h2>
           <p className="lede">{circuit.summary}</p>
+          {circuit.example && <ExampleLink no={circuit.example} />}
         </header>
 
         <CircuitDiagram n={circuit.n} gates={circuit.gates} step={step} onStep={goTo} />

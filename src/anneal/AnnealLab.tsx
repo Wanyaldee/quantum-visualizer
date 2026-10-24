@@ -18,6 +18,8 @@ import { DistributionBars } from "./DistributionBars";
 import { ProblemGraph } from "./ProblemGraph";
 import { SpectrumChart } from "./SpectrumChart";
 import { SuccessChart } from "./SuccessChart";
+import { ExampleLink } from "../ui/ExampleLink";
+import { rememberPreset } from "../ui/route";
 
 const POINTS = 101;
 const T_MIN = 0.3;
@@ -61,8 +63,10 @@ function phaseNote(s: number, gapS: number): string {
   return "問題の影響が強まり、良い答え（左側）に確率が集まり始めます。";
 }
 
-export function AnnealLab() {
-  const [problem, setProblem] = useState<AnnealPreset>(ANNEAL_PRESETS[0]);
+export function AnnealLab({ initialPreset }: { initialPreset?: string }) {
+  const [problem, setProblem] = useState<AnnealPreset>(
+    () => ANNEAL_PRESETS.find((p) => p.id === initialPreset) ?? ANNEAL_PRESETS[0],
+  );
   const [T, setT] = useState(20);
   const [sIndex, setSIndex] = useState(POINTS - 1);
   const [playing, setPlaying] = useState(false);
@@ -127,7 +131,10 @@ export function AnnealLab() {
             type="button"
             className="chip"
             aria-pressed={problem.id === p.id}
-            onClick={() => choose(p)}
+            onClick={() => {
+              choose(p);
+              rememberPreset("anneal", p.id);
+            }}
           >
             {p.title}
           </button>
@@ -138,6 +145,7 @@ export function AnnealLab() {
         <header className="stage-head">
           <h2>{problem.title}</h2>
           <p className="lede">{problem.summary}</p>
+          {problem.example && <ExampleLink no={problem.example} solvedBy="qaoa" />}
         </header>
 
         <div className="anneal-controls">
