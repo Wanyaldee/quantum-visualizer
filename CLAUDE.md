@@ -1,3 +1,12 @@
+# このリポジトリの位置づけ
+
+このリポジトリは [blueqat-mcp-playground](https://github.com/Wanyaldee/blueqat-mcp-playground)（ローカルでは `../blueqat-mcp-playground`）の姉妹リポジトリです。あちらの `examples/` にある使用例が量子回路やアニーリングで何をしているのかを、ブラウザ上で目に見える形にするためにあります。
+
+- blueqat-mcp-playground に使用例が追加・変更されたら、こちらもそれに合わせる。ゲート式の例は `src/presets/circuits.ts`、アニーリング・QAOA 系の例は `src/presets/problems.ts` にプリセットを追加・更新する。
+- 使用例に対応するプリセットは、タイトルの末尾に `（例N）` と元の例番号を付ける（例: `ベル状態：2つの量子ビットのもつれ（例1）`）。
+- 新しいプリセットを作るときは、元の例の Markdown を読んで回路や問題設定を写し取る。回路の結果や振る舞いが元の例の説明と食い違わないことを、`src/quantum/*.test.ts` のテストで確かめる。
+- 今のシミュレータでは視覚化しきれない例（量子ビット数が多すぎる、未対応のゲートを使う、など）は無理にプリセットにしない。どこが足りないかをユーザーに伝える。
+
 <!--VITE PLUS START-->
 
 # Using Vite+, the Unified Toolchain for the Web
