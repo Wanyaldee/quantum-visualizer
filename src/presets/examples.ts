@@ -149,10 +149,9 @@ export const PLAYGROUND_EXAMPLES: PlaygroundExample[] = [
     title: "VQE で水素分子の基底エネルギー",
     tools: ["run_vqe"],
     group: "vqe",
-    summary: "実際の分子のハミルトニアンを作り、結合長ごとのエネルギーを厳密解と比べる。",
+    summary:
+      "実際の分子のハミルトニアンを作り、結合長ごとのエネルギーを厳密解と比べる。1.5 Å で run_vqe が捕まったくぼみも再現できる。",
     view: { mode: "vqe", preset: "h2" },
-    missing:
-      "再現しているのは平衡結合長 0.7414 Å の1点だけです。結合長を変えた曲線（1.5 Å で局所解に捕まる様子など）は、各結合長のハミルトニアンが例に載っていないため再現していません。",
   },
   {
     no: 13,

@@ -1,4 +1,17 @@
 import type { PauliTerm } from "../quantum/vqe";
+import { H2_BOND_LENGTHS } from "./h2BondLengths";
+import { pauliTerm as P } from "./pauli";
+
+/** One Hamiltonian of a preset; H2 has one per bond length. */
+export interface VqeVariant {
+  id: string;
+  label: string;
+  terms: PauliTerm[];
+  /** Added to every energy for display (H2: nuclear repulsion, left out of the terms). */
+  offset: number;
+  /** The energy playground's run_vqe returned for this Hamiltonian, when it is known. */
+  playgroundEnergy?: number;
+}
 
 export interface VqePreset {
   id: string;
@@ -9,9 +22,11 @@ export interface VqePreset {
   n: number;
   /** run_vqe's `layers`: how many CZ chains the ansatz has. */
   layers: number;
-  terms: PauliTerm[];
-  /** Added to every energy for display (H2: nuclear repulsion, left out of the terms). */
-  offset: number;
+  variants: VqeVariant[];
+  /** Index into `variants` shown first. */
+  defaultVariant: number;
+  /** What the variants differ in, e.g. "原子どうしの距離". Absent with a single variant. */
+  variantLabel?: string;
   unit: string;
   /** A well-known classical estimate drawn as a second reference line. */
   reference?: { label: string; bits: string };
@@ -24,15 +39,6 @@ export interface VqePreset {
   example?: number;
 }
 
-const P = (ops: string, coeff: number): PauliTerm => ({
-  coeff,
-  paulis: ops
-    .split("")
-    .flatMap((op, qubit) =>
-      op === "I" ? [] : [{ op: op as PauliTerm["paulis"][number]["op"], qubit }],
-    ),
-});
-
 export const VQE_PRESETS: VqePreset[] = [
   {
     id: "ising",
@@ -43,8 +49,16 @@ export const VQE_PRESETS: VqePreset[] = [
     energyMeaning: "磁石たちの「落ち着かなさ」。低いほど安定です。",
     n: 2,
     layers: 2,
-    terms: [P("ZZ", 1), P("XI", -1), P("IX", -1)],
-    offset: 0,
+    variants: [
+      {
+        id: "ising",
+        label: "横磁場イジング模型",
+        terms: [P("ZZ", 1), P("XI", -1), P("IX", -1)],
+        offset: 0,
+        playgroundEnergy: -2.236067977499361,
+      },
+    ],
+    defaultVariant: 0,
     unit: "",
     rate: 0.2,
     steps: 60,
@@ -55,34 +69,26 @@ export const VQE_PRESETS: VqePreset[] = [
     example: 12,
     title: "水素分子のエネルギー（例12）",
     summary:
-      "水素原子2つがくっついた水素分子で、電子がどう広がると一番エネルギーが低くなるかを探します。4つの量子ビットが、電子が入れる4つの「席」を表します。出発点によっては、本当の答えの手前のくぼみで止まってしまいます。",
+      "水素原子2つがくっついた水素分子で、電子がどう広がると一番エネルギーが低くなるかを探します。4つの量子ビットが、電子が入れる4つの「席」を表します。原子どうしの距離を変えたり、出発点を変えたりすると、本当の答えの手前のくぼみで止まることがあります。",
     energyMeaning:
       "分子全体のエネルギー（単位は Hartree）。低いほど安定で、この値から分子のいろいろな性質が分かります。",
     n: 4,
     layers: 2,
-    // Example 12's Hamiltonian at the equilibrium bond length 0.7414 Å (Jordan-Wigner, 14 terms).
-    terms: [
-      P("ZIII", 0.17119775),
-      P("IZII", 0.17119775),
-      P("IIZI", -0.22278593),
-      P("IIIZ", -0.22278593),
-      P("ZZII", 0.16862219),
-      P("YXXY", 0.0453222),
-      P("YYXX", -0.0453222),
-      P("XXYY", -0.0453222),
-      P("XYYX", 0.0453222),
-      P("ZIZI", 0.12054482),
-      P("ZIIZ", 0.16586702),
-      P("IZZI", 0.16586702),
-      P("IZIZ", 0.12054482),
-      P("IIZZ", 0.17434844),
-    ],
-    offset: -0.098864,
+    variants: H2_BOND_LENGTHS.map((b) => ({
+      id: String(b.bondLength),
+      label: `${b.bondLength} Å`,
+      terms: b.terms,
+      offset: b.offset,
+      playgroundEnergy: b.playgroundVqe,
+    })),
+    defaultVariant: H2_BOND_LENGTHS.findIndex((b) => b.bondLength === 0.7414),
+    variantLabel: "原子どうしの距離",
     unit: "Hartree",
     reference: { label: "HF（平均場近似）", bits: "1100" },
     rate: 0.5,
-    steps: 700,
-    // 3 and 7 reach the exact energy; 1 and 8 stop at the Hartree-Fock state (see tests).
-    seeds: [3, 1, 7, 8],
+    steps: 1000,
+    // Chosen across the bond lengths (see tests): 3 reaches FCI near equilibrium, 1 stops at
+    // Hartree-Fock there, 10 falls into the same dip run_vqe did at 1.5 Å and beyond.
+    seeds: [3, 1, 10, 2],
   },
 ];

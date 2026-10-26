@@ -1,0 +1,182 @@
+// H2 (STO-3G, Jordan-Wigner, 4 qubits) at the 7 bond lengths of playground example 12.
+// Copied from blueqat-mcp-playground assets/12_h2_hamiltonians.json (commit 724607b), which
+// scripts/build_h2_vqe.py --json generates with PySCF + OpenFermion. `playgroundVqe` is the
+// run_vqe total energy from the table in examples/12_vqe_h2_molecule.md.
+import type { PauliTerm } from "../quantum/vqe";
+import { pauliTerm as P } from "./pauli";
+
+export interface H2BondLength {
+  /** Å */
+  bondLength: number;
+  /** Nuclear repulsion and other constant terms, left out of `terms` (Hartree). */
+  offset: number;
+  terms: PauliTerm[];
+  /** Reference values from the JSON, for tests (Hartree). */
+  hf: number;
+  fci: number;
+  playgroundVqe: number;
+}
+
+export const H2_BOND_LENGTHS: H2BondLength[] = [
+  {
+    bondLength: 0.3,
+    offset: 1.30072386,
+    terms: [
+      P("ZIII", 0.25869154),
+      P("IZII", 0.25869154),
+      P("IIZI", -0.54995737),
+      P("IIIZ", -0.54995737),
+      P("ZZII", 0.18800464),
+      P("YXXY", 0.04020463),
+      P("YYXX", -0.04020463),
+      P("XXYY", -0.04020463),
+      P("XYYX", 0.04020463),
+      P("ZIZI", 0.14527089),
+      P("ZIIZ", 0.18547552),
+      P("IZZI", 0.18547552),
+      P("IZIZ", 0.14527089),
+      P("IIZZ", 0.19623437),
+    ],
+    hf: -0.59382776,
+    fci: -0.60180371,
+    playgroundVqe: -0.59449,
+  },
+  {
+    bondLength: 0.5,
+    offset: 0.37983135,
+    terms: [
+      P("ZIII", 0.21393531),
+      P("IZII", 0.21393531),
+      P("IIZI", -0.36914432),
+      P("IIIZ", -0.36914432),
+      P("ZZII", 0.17992651),
+      P("YXXY", 0.04221756),
+      P("YYXX", -0.04221756),
+      P("XXYY", -0.04221756),
+      P("XYYX", 0.04221756),
+      P("ZIZI", 0.1345924),
+      P("ZIIZ", 0.17680996),
+      P("IZZI", 0.17680996),
+      P("IZIZ", 0.1345924),
+      P("IIZZ", 0.18620984),
+    ],
+    hf: -1.04299627,
+    fci: -1.05515979,
+    playgroundVqe: -1.054792,
+  },
+  {
+    bondLength: 0.7414,
+    offset: -0.09886397,
+    terms: [
+      P("ZIII", 0.17119775),
+      P("IZII", 0.17119775),
+      P("IIZI", -0.22278593),
+      P("IIIZ", -0.22278593),
+      P("ZZII", 0.16862219),
+      P("YXXY", 0.0453222),
+      P("YYXX", -0.0453222),
+      P("XXYY", -0.0453222),
+      P("XYYX", 0.0453222),
+      P("ZIZI", 0.12054482),
+      P("ZIIZ", 0.16586702),
+      P("IZZI", 0.16586702),
+      P("IZIZ", 0.12054482),
+      P("IIZZ", 0.17434844),
+    ],
+    hf: -1.11668439,
+    fci: -1.13727017,
+    playgroundVqe: -1.13727,
+  },
+  {
+    bondLength: 1.0,
+    offset: -0.32760819,
+    terms: [
+      P("ZIII", 0.13716573),
+      P("IZII", 0.13716573),
+      P("IIZI", -0.13036292),
+      P("IIIZ", -0.13036292),
+      P("ZZII", 0.15660062),
+      P("YXXY", 0.04919765),
+      P("YYXX", -0.04919765),
+      P("XXYY", -0.04919765),
+      P("XYYX", 0.04919765),
+      P("ZIZI", 0.10622904),
+      P("ZIIZ", 0.15542669),
+      P("IZZI", 0.15542669),
+      P("IZIZ", 0.10622904),
+      P("IIZZ", 0.16326769),
+    ],
+    hf: -1.06610865,
+    fci: -1.10115033,
+    playgroundVqe: -1.101146,
+  },
+  {
+    bondLength: 1.5,
+    offset: -0.49178578,
+    terms: [
+      P("ZIII", 0.0934565),
+      P("IZII", 0.0934565),
+      P("IIZI", -0.03564482),
+      P("IIIZ", -0.03564482),
+      P("ZZII", 0.13817585),
+      P("YXXY", 0.05738398),
+      P("YYXX", -0.05738398),
+      P("XXYY", -0.05738398),
+      P("XYYX", 0.05738398),
+      P("ZIZI", 0.08253705),
+      P("ZIIZ", 0.13992104),
+      P("IZZI", 0.13992104),
+      P("IZIZ", 0.08253705),
+      P("IIZZ", 0.14585519),
+    ],
+    hf: -0.91087355,
+    fci: -0.99814935,
+    playgroundVqe: -0.890585,
+  },
+  {
+    bondLength: 2.0,
+    offset: -0.53393635,
+    terms: [
+      P("ZIII", 0.0672793),
+      P("IZII", 0.0672793),
+      P("IIZI", 0.0066513),
+      P("IIIZ", 0.0066513),
+      P("ZZII", 0.1273657),
+      P("YXXY", 0.06478462),
+      P("YYXX", -0.06478462),
+      P("XXYY", -0.06478462),
+      P("XYYX", 0.06478462),
+      P("ZIZI", 0.0650157),
+      P("ZIIZ", 0.12980031),
+      P("IZZI", 0.12980031),
+      P("IZIZ", 0.0650157),
+      P("IIZZ", 0.13366603),
+    ],
+    hf: -0.78379265,
+    fci: -0.94864111,
+    playgroundVqe: -0.924536,
+  },
+  {
+    bondLength: 2.5,
+    offset: -0.54359909,
+    terms: [
+      P("ZIII", 0.05264858),
+      P("IZII", 0.05264858),
+      P("IIZI", 0.02551388),
+      P("IIIZ", 0.02551388),
+      P("ZZII", 0.12142002),
+      P("YXXY", 0.07055251),
+      P("YYXX", -0.07055251),
+      P("XXYY", -0.07055251),
+      P("XYYX", 0.07055251),
+      P("ZIZI", 0.05272626),
+      P("ZIIZ", 0.12327878),
+      P("IZZI", 0.12327878),
+      P("IZIZ", 0.05272626),
+      P("IIZZ", 0.12551495),
+    ],
+    hf: -0.7029436,
+    fci: -0.93605492,
+    playgroundVqe: -0.931634,
+  },
+];

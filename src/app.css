@@ -1586,6 +1586,84 @@ textarea {
   color: var(--ink-3);
 }
 
+.vqe-variants {
+  margin-top: 20px;
+}
+
+.exact-curve,
+.reference-curve {
+  fill: none;
+  stroke-width: 2;
+}
+
+.exact-curve {
+  stroke: var(--answer);
+}
+
+.reference-curve {
+  stroke: var(--measure);
+  stroke-dasharray: 6 4;
+}
+
+/* Hollow, so playground's square shows through where the two results coincide. */
+.current-ring {
+  fill: none;
+  r: 8px;
+}
+
+.playground-mark {
+  fill: var(--surface);
+  stroke: var(--ink-2);
+  stroke-width: 2;
+  pointer-events: none;
+}
+
+.curve-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 18px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.82rem;
+  color: var(--ink-2);
+}
+
+.curve-legend li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-swatch {
+  display: inline-block;
+  width: 18px;
+  height: 0;
+  border-top: 2px solid;
+}
+
+.legend-exact {
+  border-color: var(--answer);
+}
+
+.legend-reference {
+  border-top-style: dashed;
+  border-color: var(--measure);
+}
+
+.legend-playground {
+  width: 10px;
+  height: 10px;
+  border: 2px solid var(--ink-2);
+}
+
+.legend-current {
+  width: 10px;
+  height: 10px;
+  border: 3px solid var(--amp);
+  border-radius: 50%;
+}
+
 /* ---------- narrow screens ---------- */
 
 @media (max-width: 820px) {
