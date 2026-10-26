@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { BasicsSlides } from "./BasicsSlides";
 import {
   PLAYGROUND_EXAMPLES,
   PLAYGROUND_URL,
@@ -45,86 +46,13 @@ function Basics() {
     <section className="learn-section" aria-labelledby="basics">
       <h2 id="basics">最低限の知識</h2>
       <p className="lede">
-        使用例を読むのに必要なことだけをまとめました。もっと丁寧な説明は playground の{" "}
-        <a href={playgroundDoc("docs/basics.md")}>量子コンピューティングの基礎</a> にあります。
+        使用例を読むのに必要なことだけを、このアプリの図が動く様子と一緒にまとめました。自動で進むアニメーションの横に、いま何が起きているかの説明が出ます。もっと丁寧な説明は
+        playground の <a href={playgroundDoc("docs/basics.md")}>量子コンピューティングの基礎</a>{" "}
+        にあります。
       </p>
+      <BasicsSlides />
+      <h3 className="terms-title">アニメーションにしていない補足</h3>
       <div className="terms">
-        <Term title="量子ビットと重ね合わせ">
-          <p>
-            普通のビットは 0 か 1 のどちらか。量子ビットは 0 と 1 を<strong>同時に</strong>
-            持てます。n 個あれば 2<sup>n</sup>{" "}
-            通りの状態が、それぞれ「振幅」という重みつきで重なります。
-          </p>
-        </Term>
-        <Term title="振幅：大きさと向き">
-          <p>
-            振幅には<strong>大きさ</strong>と<strong>向き（位相）</strong>
-            があります。このアプリでは大きさを円の面積（＝測ったときに出る確率）、向きを針と色で描いています。
-          </p>
-        </Term>
-        <Term title="測定">
-          <p>
-            測ると重ね合わせは壊れ、確率に従ってどれか<strong>1つ</strong>
-            だけが出ます。だから同じ回路を何百回も実行（shots）して、出た回数（counts）で確率を見ます。
-          </p>
-        </Term>
-        <Term title="干渉">
-          <p>
-            向きのそろった振幅は強め合い、逆向きは打ち消し合います。量子アルゴリズムの仕事は、
-            <strong>正解の振幅を強め、不正解を打ち消す</strong>
-            ように向きをそろえることです（グローバー探索がその典型）。
-          </p>
-        </Term>
-        <Term title="もつれ（エンタングルメント）">
-          <p>
-            複数の量子ビットの結果が連動する状態。ベル状態では片方が 0 ならもう片方も必ず
-            0。通信の例（超高密度符号化・BB84）はこの性質を使っています。
-          </p>
-        </Term>
-        <Term title="よく出るゲート">
-          <ul className="gate-list">
-            <li>
-              <code>h</code> 0 と 1 を半々に重ねる（重なっていれば干渉させて戻す）
-            </li>
-            <li>
-              <code>x</code> 0 と 1 を入れ替える
-            </li>
-            <li>
-              <code>z</code> 1 の向きを反転（確率は変わらない）
-            </li>
-            <li>
-              <code>cx</code> 制御が 1 のときだけ相手を反転（CNOT）
-            </li>
-            <li>
-              <code>cz</code> / <code>ccz</code> 全部 1 のときだけ向きを反転
-            </li>
-          </ul>
-          <p className="term-foot">
-            全一覧は <a href={playgroundDoc("docs/gates.md")}>対応ゲート一覧</a>。
-          </p>
-        </Term>
-        <Term title="ビット列の読み方">
-          <p>
-            blueqat もこのアプリも<strong>左端が q0</strong>
-            です（<code>bitstring[0]</code> = q0）。<code>101</code> は q0 = 1, q1 = 0, q2 =
-            1。教科書によっては逆向きに書くので、よくつまずきます。
-          </p>
-        </Term>
-        <Term title="QUBO">
-          <p>
-            0/1 の変数の2次式で書いた「点数表」。点数が一番<strong>低い</strong>
-            組み合わせが答えです。「ちょうど2つ選ぶ」などのルールは、破ると点数が上がる
-            <strong>罰点</strong>として足します。最大化したいときは符号を反転します。
-          </p>
-        </Term>
-        <Term title="QAOA と量子アニーリング">
-          <p>
-            どちらも QUBO を解く方法です。QAOA はゲート回路を数段重ねて近づける方法（playground の
-            run_qaoa）、アニーリングは「簡単な問題」から「解きたい問題」へゆっくり切り替える方法（このアプリの
-            <a href="#anneal">アニーリング</a>）。どちらも
-            <strong>必ず最適解が出るとは限りません</strong>。
-          </p>
-        </Term>
         <Term title="VQE">
           <p>
             パラメータつきの回路でエネルギーを測り、古典コンピュータがパラメータを直す、をくり返して一番低いエネルギーを探す方法。分子や物質の計算に使います。

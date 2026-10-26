@@ -857,6 +857,156 @@ textarea {
   font-size: 0.82rem !important;
 }
 
+.terms-title {
+  margin-top: 28px;
+  font-size: 1.05rem;
+}
+
+/* ---------- basics slides ---------- */
+
+.deck {
+  margin-top: 18px;
+}
+
+.deck-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.slide {
+  margin-top: 12px;
+  background: var(--bg);
+  border-radius: 12px;
+  padding: 20px 22px;
+}
+
+.slide-head {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.slide-head h3 {
+  font-size: 1.3rem;
+}
+
+.slide-no {
+  flex: none;
+  font: 500 0.85rem var(--mono);
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.slide-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  gap: 28px;
+  margin-top: 16px;
+  /* Frames differ in height; a floor keeps the controls from jumping on every frame. */
+  min-height: 340px;
+}
+
+.slide-visual,
+.before-after,
+.slide-charts {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: start;
+  gap: 14px;
+}
+
+.slide-visual .chart,
+.slide-visual .graph {
+  margin: 0;
+}
+
+/* The graph's own caption talks about "the most likely answer right now", which only
+   makes sense inside the anneal lab; the slide caption says what the picture means. */
+.slide-visual .graph figcaption {
+  display: none;
+}
+
+.slide-row {
+  display: grid;
+  grid-template-columns: 7.5em minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+}
+
+.slide-row-label {
+  font: 500 0.85rem var(--mono);
+  color: var(--ink-2);
+}
+
+.slide-measure {
+  display: grid;
+  gap: 4px;
+}
+
+.frame-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.frame-dots {
+  display: flex;
+  gap: 6px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.frame-dots button {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 2px solid var(--ink-3);
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+}
+
+.frame-dots button[aria-current="step"] {
+  background: var(--amp);
+  border-color: var(--amp);
+}
+
+.slide-caption-title {
+  margin: 16px 0 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--ink-3);
+}
+
+.slide-caption {
+  margin-top: 4px;
+  min-height: 6.5em;
+}
+
+.slide-body {
+  margin-top: 14px;
+  font-size: 0.92rem;
+  color: var(--ink-2);
+}
+
+.slide-body p,
+.slide-body ul {
+  margin: 6px 0 0;
+}
+
+.slide-link {
+  margin: 14px 0 0;
+}
+
+.slide-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 18px;
+}
+
 .example-group {
   margin-top: 28px;
 }
@@ -1011,7 +1161,8 @@ textarea {
 
   .state-grid,
   .anneal-grid,
-  .anneal-controls {
+  .anneal-controls,
+  .slide-grid {
     grid-template-columns: minmax(0, 1fr);
   }
 
@@ -1050,6 +1201,14 @@ textarea {
   .example {
     grid-template-columns: minmax(0, 1fr);
     gap: 2px;
+  }
+
+  .slide {
+    padding: 16px 12px;
+  }
+
+  .slide-row {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .example-no {
