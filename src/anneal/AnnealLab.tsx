@@ -14,6 +14,8 @@ import {
 } from "../quantum/anneal";
 import { basisLabel } from "../quantum/gate";
 import { pct } from "../ui/phase";
+import { SlideGuide } from "../ui/SlideDeck";
+import { AnnealGuide } from "./AnnealGuide";
 import { DistributionBars } from "./DistributionBars";
 import { ProblemGraph } from "./ProblemGraph";
 import { SpectrumChart } from "./SpectrumChart";
@@ -147,6 +149,10 @@ export function AnnealLab({ initialPreset }: { initialPreset?: string }) {
           <p className="lede">{problem.summary}</p>
           {problem.example && <ExampleLink no={problem.example} solvedBy="qaoa" />}
         </header>
+
+        <SlideGuide summary="この画面の見方（スライドで説明）">
+          <AnnealGuide Ts={T_GRID} tMin={T_MIN} tMax={T_MAX} />
+        </SlideGuide>
 
         <div className="anneal-controls">
           <div className="control">

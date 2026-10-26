@@ -1007,6 +1007,63 @@ textarea {
   margin-top: 18px;
 }
 
+.school {
+  margin-top: 14px;
+  padding: 10px 14px;
+  border-left: 3px solid var(--answer);
+  background: color-mix(in oklab, var(--answer) 8%, transparent);
+  border-radius: 0 8px 8px 0;
+  font-size: 0.88rem;
+  color: var(--ink-2);
+}
+
+.school p {
+  margin: 4px 0 0;
+}
+
+/* Keep 2ⁿ from pushing lines apart (and into the line above). */
+.school sup,
+.slide sup {
+  line-height: 0;
+}
+
+.school b {
+  color: var(--ink);
+}
+
+.school-title {
+  margin: 0 !important;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--ink-2);
+}
+
+/* ---------- lab guides ---------- */
+
+.guide {
+  margin-top: 16px;
+}
+
+.guide summary {
+  display: inline-block;
+  cursor: pointer;
+  padding: 6px 14px;
+  border: 1px solid var(--amp);
+  border-radius: 999px;
+  color: var(--amp);
+  font-weight: 500;
+  font-size: 0.92rem;
+}
+
+.guide[open] summary {
+  background: var(--amp);
+  color: #fff;
+}
+
+.guide .deck {
+  margin-top: 12px;
+}
+
 .example-group {
   margin-top: 28px;
 }

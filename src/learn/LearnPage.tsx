@@ -50,6 +50,9 @@ function Basics() {
         playground の <a href={playgroundDoc("docs/basics.md")}>量子コンピューティングの基礎</a>{" "}
         にあります。
       </p>
+      <p className="lede">
+        学校で習う数学や物理の話も入れています。習っている人はこういうところで使われてるんだ～と思って、習っていない人は習ったときに、あそこで役立ってるって言ってたな～と思ってもらえたら嬉しいです。
+      </p>
       <BasicsSlides />
       <h3 className="terms-title">アニメーションにしていない補足</h3>
       <div className="terms">

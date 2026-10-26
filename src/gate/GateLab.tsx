@@ -3,7 +3,9 @@ import { CIRCUIT_PRESETS } from "../presets/circuits";
 import { GATE_ARITY, probabilities, sample, simulateSteps, type Gate } from "../quantum/gate";
 import { AmplitudeDials, PhaseLegend } from "./AmplitudeDials";
 import { CircuitDiagram } from "./CircuitDiagram";
+import { SlideGuide } from "../ui/SlideDeck";
 import { GateEditor } from "./GateEditor";
+import { GateGuide } from "./GateGuide";
 import { MeasureBars } from "./MeasureBars";
 import { ExampleLink } from "../ui/ExampleLink";
 import { rememberPreset } from "../ui/route";
@@ -126,6 +128,10 @@ export function GateLab({ initialPreset }: { initialPreset?: string }) {
           <p className="lede">{circuit.summary}</p>
           {circuit.example && <ExampleLink no={circuit.example} />}
         </header>
+
+        <SlideGuide summary="この画面の見方（スライドで説明）">
+          <GateGuide />
+        </SlideGuide>
 
         <CircuitDiagram n={circuit.n} gates={circuit.gates} step={step} onStep={goTo} />
 

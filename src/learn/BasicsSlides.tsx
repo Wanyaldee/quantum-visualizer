@@ -1,70 +1,13 @@
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useMemo } from "react";
 import { DistributionBars } from "../anneal/DistributionBars";
 import { ProblemGraph } from "../anneal/ProblemGraph";
 import { SpectrumChart } from "../anneal/SpectrumChart";
-import { AmplitudeDials, PhaseLegend } from "../gate/AmplitudeDials";
-import { MeasureBars } from "../gate/MeasureBars";
-import { ANNEAL_PRESETS } from "../presets/problems";
-import {
-  evolve,
-  groundIndices,
-  levelPopulations,
-  narrowestGap,
-  quboEnergies,
-  rescale,
-  spectrum,
-} from "../quantum/anneal";
-import {
-  basisLabel,
-  probabilities,
-  sample,
-  simulateSteps,
-  type Gate,
-  type State,
-} from "../quantum/gate";
+import { PhaseLegend } from "../gate/AmplitudeDials";
 import { playgroundDoc } from "../presets/examples";
-
-const FRAME_MS = 2600;
-// The last frame carries the punchline, so it stays up longer before the loop restarts.
-const LAST_FRAME_MS = 4200;
-const POINTS = 101;
-
-interface Frame {
-  view: ReactNode;
-  /** What this frame of the animation is showing, in plain words. */
-  caption: ReactNode;
-}
-
-interface Slide {
-  title: string;
-  body: ReactNode;
-  frames: Frame[];
-  /** The lab view where the same behavior can be played with. */
-  link?: { href: string; label: string };
-}
-
-const h = (q: number): Gate => ({ gate: "h", qubits: [q] });
-const x = (q: number): Gate => ({ gate: "x", qubits: [q] });
-const z = (q: number): Gate => ({ gate: "z", qubits: [q] });
-const s = (q: number): Gate => ({ gate: "s", qubits: [q] });
-const cx = (c: number, t: number): Gate => ({ gate: "cx", qubits: [c, t] });
-const cz = (a: number, b: number): Gate => ({ gate: "cz", qubits: [a, b] });
-
-/** State after running `gates` from |0…0⟩. */
-const run = (n: number, gates: Gate[]): State => simulateSteps(n, gates)[gates.length];
-
-function Dials({ n, gates }: { n: number; gates: Gate[] }) {
-  return <AmplitudeDials state={run(n, gates)} n={n} />;
-}
-
-function Row({ label, children }: { label: string; children: ReactNode }) {
-  return (
-    <div className="slide-row">
-      <span className="slide-row-label">{label}</span>
-      {children}
-    </div>
-  );
-}
+import { basisLabel, probabilities, sample, type Gate, type State } from "../quantum/gate";
+import { SlideDeck, type Frame, type Slide } from "../ui/SlideDeck";
+import { cx, cz, h, maxcutDemo, POINTS, run, s, x, z } from "./demo";
+import { Dials, Measured, Row } from "./DemoViews";
 
 function BeforeAfter({ n, before, gate }: { n: number; before: Gate[]; gate: Gate }) {
   return (
@@ -79,57 +22,35 @@ function BeforeAfter({ n, before, gate }: { n: number; before: Gate[]; gate: Gat
   );
 }
 
-function Measured({ state, n, counts }: { state: State; n: number; counts: Uint32Array | null }) {
-  return (
-    <div className="slide-measure">
-      <AmplitudeDials state={state} n={n} />
-      {counts ? (
-        <MeasureBars counts={counts} probs={probabilities(state)} n={n} />
-      ) : (
-        <p className="panel-text">まだ測っていません。</p>
-      )}
-    </div>
-  );
-}
-
 function useSlides(): Slide[] {
   return useMemo(() => {
     const plus = run(1, [h(0)]);
     const bell = run(2, [h(0), cx(0, 1)]);
     const shots = (state: State, k: number) => sample(probabilities(state), k);
 
-    const maxcut = ANNEAL_PRESETS.find((p) => p.id === "maxcut") ?? ANNEAL_PRESETS[0];
-    const raw = quboEnergies(maxcut.n, maxcut.terms);
-    const ground = new Set(groundIndices(raw));
-    const ep = rescale(raw, maxcut.n);
-    const sp = spectrum(maxcut.n, ep, POINTS);
-    const slow = evolve(maxcut.n, ep, 20, POINTS);
-    const fast = evolve(maxcut.n, ep, 1, POINTS);
-    const gapK = narrowestGap(sp, ground.size).k;
+    const demo = maxcutDemo();
+    const { problem: maxcut, raw, ground, sp, gapK, slow, fast } = demo;
     const bits = (i: number) => Array.from({ length: maxcut.n }, (_, q) => (i >> q) & 1);
     const oneHot = (i: number) => Float64Array.from(raw, (_, k) => (k === i ? 1 : 0));
 
-    const annealView = (snaps: typeof slow, k: number) => {
-      const probs = Float64Array.from(snaps[k].re, (r, i) => r * r + snaps[k].im[i] ** 2);
-      return (
-        <div className="slide-charts">
-          <SpectrumChart
-            sp={sp}
-            pops={sp.map((pt, j) => levelPopulations(pt, snaps[j]))}
-            sIndex={k}
-            groundCount={ground.size}
-            onSeek={() => {}}
-          />
-          <DistributionBars
-            n={maxcut.n}
-            probs={probs}
-            energies={raw}
-            ground={ground}
-            describe={maxcut.describe}
-          />
-        </div>
-      );
-    };
+    const annealView = (run: typeof slow, k: number) => (
+      <div className="slide-charts">
+        <SpectrumChart
+          sp={sp}
+          pops={run.pops}
+          sIndex={k}
+          groundCount={ground.size}
+          onSeek={() => {}}
+        />
+        <DistributionBars
+          n={maxcut.n}
+          probs={run.probs(k)}
+          energies={raw}
+          ground={ground}
+          describe={maxcut.describe}
+        />
+      </div>
+    );
 
     const quboFrame = (i: number, extra: string): Frame => ({
       view: <ProblemGraph problem={maxcut} probs={oneHot(i)} />,
@@ -144,6 +65,14 @@ function useSlides(): Slide[] {
     return [
       {
         title: "量子ビットと重ね合わせ",
+        school: (
+          <p>
+            <b>数学II「指数関数」</b>：円の数は 2<sup>n</sup> 。量子ビットが 10 個で約 1000、300
+            個なら 2<sup>300</sup> ≈ 10<sup>90</sup> で、宇宙にある原子の数（約 10<sup>80</sup>
+            ）より多くなります。このアプリが量子ビットを 5
+            個までにしているのも、普通のコンピュータでは円の数が倍々で増えるからです。
+          </p>
+        ),
         body: (
           <p>
             普通のビットは 0 か 1 のどちらか。量子ビットは 0 と 1 を<strong>同時に</strong>
@@ -184,6 +113,13 @@ function useSlides(): Slide[] {
       },
       {
         title: "振幅：大きさと向き",
+        school: (
+          <p>
+            <b>数学C「複素数平面」</b>：振幅は複素数で、針の向きは<b>偏角</b>
+            、円の面積は絶対値の2乗です。Z ゲートは |1⟩ の振幅を −1 倍（180° 回転）、S ゲートは i
+            倍（90° 回転）しているだけ。複素数をかけると回転する、がそのまま使われています。
+          </p>
+        ),
         body: (
           <p>
             振幅には<strong>大きさ</strong>と<strong>向き（位相）</strong>
@@ -229,6 +165,14 @@ function useSlides(): Slide[] {
       },
       {
         title: "測定",
+        school: (
+          <p>
+            <b>数学B「統計的な推測」</b>
+            ：回数を増やすほど、出た割合が確率に近づく（大数の法則）。50% の場合、ずれはほとんど（約
+            95%）が ±1/√（回数）の中に収まり、10 回なら ±30% ほど、1000 回なら ±3%
+            ほどです。実機の結果を読むときも同じ考え方を使います。
+          </p>
+        ),
         body: (
           <p>
             測ると重ね合わせは壊れ、確率に従ってどれか<strong>1つ</strong>
@@ -258,6 +202,12 @@ function useSlides(): Slide[] {
       },
       {
         title: "干渉",
+        school: (
+          <p>
+            <b>物理「波の干渉」</b>
+            ：山と山が重なれば強め合い、山と谷が重なれば打ち消し合う。水面の波や、ヤングの実験の明暗の縞と同じ仕組みが、確率の「波」で起きています。
+          </p>
+        ),
         body: (
           <p>
             向きのそろった振幅は強め合い、逆向きは打ち消し合います。量子アルゴリズムの仕事は、
@@ -297,6 +247,13 @@ function useSlides(): Slide[] {
       },
       {
         title: "もつれ（エンタングルメント）",
+        school: (
+          <p>
+            <b>数学A「確率」の独立</b>：2つが独立なら P(A かつ B) = P(A)·P(B) 。q0 も q1 も 0 が 50%
+            なので、独立なら 00 は 25% のはず。実際は 50% で、01 は
+            0%。積の式が成り立たない＝独立でない、がもつれの数学的な意味です。
+          </p>
+        ),
         body: (
           <p>
             複数の量子ビットの結果が連動する状態。ベル状態では片方が 0 ならもう片方も必ず
@@ -337,6 +294,13 @@ function useSlides(): Slide[] {
       },
       {
         title: "ビット列の読み方",
+        school: (
+          <p>
+            <b>情報I「2進数」</b>：円の番号は 2 進数です。ただし blueqat は q0 を 1 の位にして
+            <b>左に</b>書くので、<code>101</code> の番号は 1 + 0×2 + 1×4 = 5。普段の 2
+            進数とは読む向きが逆です。
+          </p>
+        ),
         body: (
           <p>
             blueqat もこのアプリも<strong>左端が q0</strong>
@@ -371,6 +335,13 @@ function useSlides(): Slide[] {
       },
       {
         title: "よく出るゲート",
+        school: (
+          <p>
+            <b>数学C「ベクトル」→ 大学の線形代数</b>：状態は 2<sup>n</sup>{" "}
+            個の成分を持つベクトル、ゲートは行列です。x は (a, b) を (b, a) に入れ替える行列、z は
+            (a, b) を (a, −b) にする行列。回路を1ステップ進めるのは「行列 × ベクトル」の計算です。
+          </p>
+        ),
         body: (
           <>
             <ul className="gate-list">
@@ -421,6 +392,13 @@ function useSlides(): Slide[] {
       },
       {
         title: "QUBO",
+        school: (
+          <p>
+            <b>数学I「2次関数」</b>：QUBO は2次式の最小値探し。ただし x は 0 か 1 だけなので x
+            <sup>2</sup> = x になり、グラフを描いて頂点を探す方法は使えません。組み合わせが 2
+            <sup>n</sup> 通りあるのが難しさの正体です。
+          </p>
+        ),
         body: (
           <p>
             0/1 の変数の2次式で書いた「点数表」。点数が一番<strong>低い</strong>
@@ -437,6 +415,13 @@ function useSlides(): Slide[] {
       },
       {
         title: "QAOA と量子アニーリング",
+        school: (
+          <p>
+            <b>物理「原子」のエネルギー準位</b>
+            ：原子の電子がとびとびのエネルギーの段に乗り、光を受けると上の段へ飛び移る。図の線と丸はこれと同じです。「ゆっくり変えれば一番下の段に居続ける」ことは、大学の量子力学で
+            <b>断熱定理</b>として習います。
+          </p>
+        ),
         body: (
           <p>
             どちらも QUBO を解く方法です。QAOA はゲート回路を数段重ねて近づける方法（playground の
@@ -479,124 +464,5 @@ function useSlides(): Slide[] {
 }
 
 export function BasicsSlides() {
-  const slides = useSlides();
-  const [index, setIndex] = useState(0);
-  const [frame, setFrame] = useState(0);
-  const [playing, setPlaying] = useState(
-    () => !matchMedia("(prefers-reduced-motion: reduce)").matches,
-  );
-
-  const slide = slides[index];
-  const last = slide.frames.length - 1;
-
-  useEffect(() => {
-    if (!playing) return;
-    const id = setTimeout(
-      () => setFrame((f) => (f >= last ? 0 : f + 1)),
-      frame === last ? LAST_FRAME_MS : FRAME_MS,
-    );
-    return () => clearTimeout(id);
-  }, [playing, frame, last]);
-
-  const goSlide = (k: number) => {
-    setIndex(Math.max(0, Math.min(slides.length - 1, k)));
-    setFrame(0);
-  };
-
-  const pickFrame = (k: number) => {
-    setPlaying(false);
-    setFrame(k);
-  };
-
-  return (
-    <div
-      className="deck"
-      onKeyDown={(e) => {
-        if (e.key === "ArrowRight") goSlide(index + 1);
-        if (e.key === "ArrowLeft") goSlide(index - 1);
-      }}
-    >
-      <nav className="deck-tabs" aria-label="スライド">
-        {slides.map((sl, k) => (
-          <button
-            key={sl.title}
-            type="button"
-            className="chip chip-small"
-            aria-pressed={k === index}
-            onClick={() => goSlide(k)}
-          >
-            {k + 1}. {sl.title}
-          </button>
-        ))}
-      </nav>
-
-      <article className="slide" aria-roledescription="スライド">
-        <header className="slide-head">
-          <span className="slide-no">
-            {index + 1} / {slides.length}
-          </span>
-          <h3>{slide.title}</h3>
-        </header>
-        <div className="slide-grid">
-          <div className="slide-visual">{slide.frames[Math.min(frame, last)].view}</div>
-          <div className="slide-text">
-            <div className="frame-controls">
-              <button
-                type="button"
-                className="btn"
-                onClick={() => {
-                  if (!playing && frame >= last) setFrame(0);
-                  setPlaying(!playing);
-                }}
-              >
-                {playing ? "止める" : "再生"}
-              </button>
-              <ol className="frame-dots" aria-label="アニメーションのコマ">
-                {slide.frames.map((_, k) => (
-                  <li key={k}>
-                    <button
-                      type="button"
-                      aria-label={`${k + 1} コマ目`}
-                      aria-current={k === frame ? "step" : undefined}
-                      onClick={() => pickFrame(k)}
-                    />
-                  </li>
-                ))}
-              </ol>
-            </div>
-            <p className="slide-caption-title">このアニメーションの意味</p>
-            <p className="note slide-caption" aria-live="polite">
-              {slide.frames[Math.min(frame, last)].caption}
-            </p>
-            <div className="slide-body">{slide.body}</div>
-            {slide.link && (
-              <p className="slide-link">
-                <a className="btn" href={slide.link.href}>
-                  {slide.link.label}
-                </a>
-              </p>
-            )}
-          </div>
-        </div>
-        <footer className="slide-nav">
-          <button
-            type="button"
-            className="btn"
-            onClick={() => goSlide(index - 1)}
-            disabled={index === 0}
-          >
-            ← 前へ
-          </button>
-          <button
-            type="button"
-            className="btn btn-primary"
-            onClick={() => goSlide(index + 1)}
-            disabled={index === slides.length - 1}
-          >
-            次へ →
-          </button>
-        </footer>
-      </article>
-    </div>
-  );
+  return <SlideDeck slides={useSlides()} label="基礎知識のスライド" />;
 }
