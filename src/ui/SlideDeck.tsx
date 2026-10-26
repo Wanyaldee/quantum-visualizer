@@ -14,8 +14,11 @@ export interface Slide {
   title: string;
   body: ReactNode;
   frames: Frame[];
-  /** Where school math or physics shows up in this slide. */
+  /** Where high-school math or physics shows up in this slide. */
   school?: ReactNode;
+  /** The same for KOSEN subjects (香川高専 電気情報工学科's syllabus), which reach
+   * university math at high-school age. */
+  kosen?: ReactNode;
   /** The lab view where the same behavior can be played with. */
   link?: { href: string; label: string };
 }
@@ -115,10 +118,16 @@ export function SlideDeck({ slides, label }: { slides: Slide[]; label: string })
               {slide.frames[Math.min(frame, last)].caption}
             </p>
             <div className="slide-body">{slide.body}</div>
-            {slide.school && (
+            {(slide.school || slide.kosen) && (
               <aside className="school">
                 <p className="school-title">学校で習ったことが、ここで使われている</p>
                 {slide.school}
+                {slide.kosen && (
+                  <div className="school-kosen">
+                    <p className="school-tag">高専では</p>
+                    {slide.kosen}
+                  </div>
+                )}
               </aside>
             )}
             {slide.link && (

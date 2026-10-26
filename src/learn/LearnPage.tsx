@@ -53,6 +53,13 @@ function Basics() {
       <p className="lede">
         学校で習う数学や物理の話も入れています。習っている人はこういうところで使われてるんだ〜と思って、習っていない人は習ったときに、あそこで役立ってるって言ってたな〜と思ってもらえたら嬉しいです。
       </p>
+      <p className="panel-text">
+        高校の科目名はいまの学習指導要領のもの、「高専では」の科目名と学年は
+        <a href="https://syllabus.kosen-k.go.jp/Pages/PublicSubjects?school_id=39&department_id=32&year=2025&lang=ja">
+          香川高専 電気情報工学科の令和7年度シラバス
+        </a>
+        から、あくまで参考情報として拾ってきたものです。学校や学科、年度によって科目名や学ぶ時期は違いますが、「この勉強はこの先あそこにつながるんだ」と見通しを持って勉強するきっかけになれば嬉しいです。
+      </p>
       <BasicsSlides />
       <h3 className="terms-title">アニメーションにしていない補足</h3>
       <div className="terms">

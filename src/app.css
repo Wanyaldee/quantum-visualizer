@@ -1027,6 +1027,19 @@ textarea {
   line-height: 0;
 }
 
+.school-kosen {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed color-mix(in oklab, var(--answer) 45%, transparent);
+}
+
+.school-tag {
+  margin: 0 !important;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--ink-2);
+}
+
 .school b {
   color: var(--ink);
 }
