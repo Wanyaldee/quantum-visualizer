@@ -9,6 +9,8 @@ export interface CurvePoint {
   hf: number;
   /** playground's run_vqe result at this bond length. */
   playground?: number;
+  /** The spin-aligned state's energy. */
+  spin?: number;
 }
 
 /**
@@ -27,6 +29,8 @@ export function PotentialCurve({
   onSelect: (i: number) => void;
 }) {
   const xs = points.map((p) => p.x);
+  // The spin-aligned curve shoots far above the others at short bond lengths; it is clipped
+  // to the range the other curves need rather than squashing them.
   const ys = points.flatMap((p) => [p.fci, p.hf, p.playground ?? p.fci]).concat(current);
   const x0 = Math.min(...xs);
   const x1 = Math.max(...xs);
@@ -34,7 +38,9 @@ export function PotentialCurve({
   const hi = Math.max(...ys);
   const pad = (hi - lo) * 0.08;
   const x = (v: number) => M.left + ((v - x0) / (x1 - x0)) * (W - M.left - M.right);
-  const y = (e: number) => M.top + ((hi + pad - e) / (hi - lo + 2 * pad)) * (H - M.top - M.bottom);
+  const y = (e: number) =>
+    M.top + ((hi + pad - Math.min(e, hi + pad)) / (hi - lo + 2 * pad)) * (H - M.top - M.bottom);
+  const spinPoints = points.filter((p) => p.spin !== undefined && p.spin <= hi + pad);
   const line = (f: (p: CurvePoint) => number) =>
     points.map((p) => `${x(p.x).toFixed(1)},${y(f(p)).toFixed(1)}`).join(" ");
   const ticks = [lo, (lo + hi) / 2, hi];
@@ -63,6 +69,14 @@ export function PotentialCurve({
             </text>
             <polyline className="exact-curve" points={line((p) => p.fci)} />
             <polyline className="reference-curve" points={line((p) => p.hf)} />
+            {spinPoints.length > 1 && (
+              <polyline
+                className="spin-curve"
+                points={spinPoints
+                  .map((p) => `${x(p.x).toFixed(1)},${y(p.spin!).toFixed(1)}`)
+                  .join(" ")}
+              />
+            )}
             <line
               className="cursor"
               x1={x(points[selected].x)}
@@ -116,6 +130,10 @@ export function PotentialCurve({
           HF（平均場近似）
         </li>
         <li>
+          <span className="legend-swatch legend-spin" />
+          三重項（電子2つのスピンがそろった状態）
+        </li>
+        <li>
           <span className="legend-swatch legend-playground" />
           playground の run_vqe の結果
         </li>
@@ -127,8 +145,8 @@ export function PotentialCurve({
       <p className="chart-foot">
         緑の曲線の一番低い所（約 0.74
         Å）が、実際の水素分子の原子どうしの距離です。離れるほど、HF（オレンジ）は緑から大きくずれていきます。電子どうしがよけ合う効果を取りこぼすからです。四角は
-        playground の run_vqe の結果で、1.5 Å
-        だけ大きく外れています。距離を選んで、このページのつまみ回しでも同じことが起きるか確かめてみてください。
+        playground の run_vqe の結果です。1.5 Å
+        から先の四角は、緑ではなく紫の点線に乗っています。紫は「三重項」、つまり電子2つのスピン（電子が持つ小さな磁石の向き）がそろった状態のエネルギーで、本当の答え（2つの電子が逆向きでペアになる一重項）とは別の状態です。原子どうしが離れるほど紫は緑に近づくので、そこに落ち着いてしまいやすくなります。距離を選んで、このページのつまみ回しでも同じことが起きるか確かめてみてください。
       </p>
     </figure>
   );

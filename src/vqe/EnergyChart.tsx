@@ -14,6 +14,7 @@ export function EnergyChart({
   step,
   exact,
   reference,
+  spinAligned,
   digits,
   onSeek,
 }: {
@@ -23,6 +24,8 @@ export function EnergyChart({
   step: number;
   exact: number;
   reference?: { label: string; energy: number };
+  /** Drawn only when it falls inside the zoomed range. */
+  spinAligned?: { label: string; energy: number };
   digits: number;
   onSeek: (step: number) => void;
 }) {
@@ -30,7 +33,13 @@ export function EnergyChart({
   const top = Math.max(...traces.map((t) => t[0]));
   // With a reference line, zoom in on the gap between it and the exact energy: that gap is
   // the whole story (stuck at Hartree-Fock or not), and it is tiny next to where runs start.
-  const hi = reference ? Math.min(top, exact + 4 * (reference.energy - exact)) : top;
+  // Every run's end point stays in view, so a run stuck far above (the spin-aligned state)
+  // is not flattened against the top edge.
+  const ends = Math.max(...traces.map((t) => t[t.length - 1]));
+  const zoomTop = reference
+    ? Math.max(exact + 4 * (reference.energy - exact), ends + 0.1 * (ends - exact))
+    : top;
+  const hi = Math.min(top, zoomTop);
   const span = hi - exact || 1;
   const lo = exact - span * 0.12;
   const clipped = hi < top;
@@ -94,6 +103,20 @@ export function EnergyChart({
             <text className="exact-label" x={W - M.right} y={y(exact) + 14} textAnchor="end">
               本当の一番低いエネルギー
             </text>
+            {spinAligned && spinAligned.energy <= hi && (
+              <>
+                <line
+                  className="spin-line"
+                  x1={M.left}
+                  x2={W - M.right}
+                  y1={y(spinAligned.energy)}
+                  y2={y(spinAligned.energy)}
+                />
+                <text className="spin-label" x={M.left + 6} y={y(spinAligned.energy) - 5}>
+                  {spinAligned.label}
+                </text>
+              </>
+            )}
             {reference && (
               <>
                 <line

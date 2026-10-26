@@ -30,6 +30,14 @@ export interface VqePreset {
   unit: string;
   /** A well-known classical estimate drawn as a second reference line. */
   reference?: { label: string; bits: string };
+  /**
+   * The state with both electrons' spins aligned: H2's triplet (playground checked ⟨S²⟩ = 2
+   * with OpenFermion). From 1 Å on it is the second-lowest level, and both this page's runs
+   * and playground's run_vqe can stop there. Below 1 Å a one-electron level (the qubit
+   * Hamiltonian holds every electron count) lies between it and the ground state, so it is
+   * named as the triplet, not as "the second-lowest level".
+   */
+  spinAligned?: { label: string; bits: string };
   /** Gradient-descent step size and number of steps to replay. */
   rate: number;
   steps: number;
@@ -85,10 +93,12 @@ export const VQE_PRESETS: VqePreset[] = [
     variantLabel: "原子どうしの距離",
     unit: "Hartree",
     reference: { label: "HF（平均場近似）", bits: "1100" },
+    spinAligned: { label: "三重項（スピンがそろった状態）", bits: "1010" },
     rate: 0.5,
     steps: 1000,
     // Chosen across the bond lengths (see tests): 3 reaches FCI near equilibrium, 1 stops at
-    // Hartree-Fock there, 10 falls into the same dip run_vqe did at 1.5 Å and beyond.
-    seeds: [3, 1, 10, 2],
+    // Hartree-Fock there, 10 stops in the spin-aligned state at 1.5 Å and beyond (where
+    // run_vqe did), and 6 already does so at 1 Å.
+    seeds: [3, 1, 10, 2, 6],
   },
 ];

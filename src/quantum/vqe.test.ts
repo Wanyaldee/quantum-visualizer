@@ -144,6 +144,36 @@ describe("example 12: H2", () => {
       expect(nearest, `${x} Å`).toBeLessThan(1e-3);
     }
   });
+
+  it("run_vqe's misses at 1.5, 2.0 and 2.5 Å are the spin-aligned state's energy", () => {
+    const p = preset("h2");
+    for (const x of [1.0, 1.5, 2.0, 2.5]) {
+      const v = p.variants[bond(x)];
+      const h = hamiltonian(4, v.terms);
+      const spin = basisEnergy(h, p.spinAligned!.bits) + v.offset;
+      // Both electrons' spins aligned either way is the same level (the triplet); from 1 Å on
+      // it is the second lowest.
+      expect(basisEnergy(h, "0101") + v.offset, `${x} Å`).toBeCloseTo(spin, 9);
+      expect(energyLevels(h)[1] + v.offset, `${x} Å`).toBeCloseTo(spin, 6);
+      if (x > 1) expect(Math.abs(v.playgroundEnergy! - spin), `${x} Å`).toBeLessThan(1e-5);
+    }
+  });
+
+  it("below 1 Å the triplet is not the second-lowest level (a one-electron level is)", () => {
+    const p = preset("h2");
+    const v = p.variants[bond(0.7414)];
+    const h = hamiltonian(4, v.terms);
+    // playground (OpenFermion): second level −0.538710 has N = 1; triplet is −0.532479.
+    expect(energyLevels(h)[1] + v.offset).toBeCloseTo(-0.53871, 5);
+    expect(basisEnergy(h, p.spinAligned!.bits) + v.offset).toBeCloseTo(-0.532479, 5);
+  });
+
+  it("starting point E stops in the spin-aligned state already at 1.0 Å", () => {
+    const p = preset("h2");
+    const v = p.variants[bond(1.0)];
+    const spin = basisEnergy(hamiltonian(4, v.terms), p.spinAligned!.bits) + v.offset;
+    expect(runFrom("h2", p.seeds[4], bond(1.0)).energy).toBeCloseTo(spin, 5);
+  });
 });
 
 it("variational principle: no step ever goes below the exact ground energy", () => {

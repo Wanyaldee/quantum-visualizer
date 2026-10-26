@@ -11,6 +11,7 @@
   --amp: #2f5bea;
   --answer: #0e9c7e;
   --measure: #b86e10;
+  --spin: #8a5cd0;
   --focus: #2f5bea;
 
   --serif: "Zen Old Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif;
@@ -32,6 +33,7 @@
     --amp: #5f82f2;
     --answer: #1fa283;
     --measure: #bd7b22;
+    --spin: #a585e6;
     --focus: #8aa4ff;
     color-scheme: dark;
   }

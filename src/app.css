@@ -1611,6 +1611,24 @@ textarea {
   r: 8px;
 }
 
+.spin-line,
+.spin-curve {
+  fill: none;
+  stroke: var(--spin);
+  stroke-width: 2;
+  stroke-dasharray: 2 4;
+  stroke-linecap: round;
+}
+
+.spin-label {
+  fill: var(--spin);
+  font-size: 11px;
+}
+
+.legend-swatch.legend-spin {
+  border-top: 2px dotted var(--spin);
+}
+
 .playground-mark {
   fill: var(--surface);
   stroke: var(--ink-2);

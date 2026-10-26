@@ -34,15 +34,27 @@ interface NoteInput {
   refGap: number | null;
   /** Distance from playground's run_vqe result for this Hamiltonian, when known. */
   playgroundGap: number | null;
+  /** Distance from the spin-aligned state's energy, when the preset has one. */
+  spinGap: number | null;
 }
 
-function vqeNote({ step, steps, gap, tolerance, refGap, playgroundGap }: NoteInput): string {
+function vqeNote({
+  step,
+  steps,
+  gap,
+  tolerance,
+  refGap,
+  playgroundGap,
+  spinGap,
+}: NoteInput): string {
   if (step === 0)
     return "出発点。つまみはでたらめな角度で、エネルギーはまだ高いところにいます。「再生」でつまみを回し始めます。";
   if (gap < tolerance)
     return "緑の線（本当の一番低いエネルギー）にほぼ届きました。どんな状態も緑の線より下には行けないので、ここまで下がれば答えの状態にとても近いと言えます。";
   if (step >= steps && refGap !== null && refGap < tolerance)
     return "ここで止まりました。止まった高さは HF（平均場近似）とほぼ同じで、緑の線より上です。つまみをどちらへ少し回してもエネルギーが下がらない「くぼみ」（局所解）にはまっています。別の出発点を選ぶと、緑の線まで下がることがあります。";
+  if (step >= steps && spinGap !== null && spinGap < tolerance)
+    return `ここで止まりました。止まった高さは紫の線、「電子2つのスピン（電子が持つ小さな磁石の向き）がそろった状態」と同じです。本当の答えは2つの電子が逆向きでペアになる状態（一重項）なので、これは「三重項」と呼ばれる別の状態（励起状態）に落ち着いてしまったということです。${playgroundGap !== null && playgroundGap < tolerance ? "playground の run_vqe も、この距離ではこの状態で止まっていました。" : ""}別の出発点を選ぶと、緑の線まで下がることがあります。`;
   if (step >= steps && playgroundGap !== null && playgroundGap < tolerance)
     return "ここで止まりました。緑の線より上の「くぼみ」（局所解）です。playground の run_vqe も、この距離ではほぼ同じ高さで止まっていました。方法が違っても、同じくぼみに捕まることがあるのです。別の出発点を選ぶと、緑の線まで下がることがあります。";
   if (step >= steps)
@@ -66,6 +78,10 @@ function useRuns(p: VqePreset, v: VqeVariant) {
         label: p.reference.label,
         energy: basisEnergy(h, p.reference.bits) + v.offset,
       },
+      spinAligned: p.spinAligned && {
+        label: p.spinAligned.label,
+        energy: basisEnergy(h, p.spinAligned.bits) + v.offset,
+      },
     };
   }, [p, v]);
 }
@@ -82,6 +98,7 @@ function useCurve(p: VqePreset): CurvePoint[] | null {
         fci: energyLevels(h)[0] + v.offset,
         hf: basisEnergy(h, ref.bits) + v.offset,
         playground: v.playgroundEnergy,
+        spin: p.spinAligned && basisEnergy(h, p.spinAligned.bits) + v.offset,
       };
     });
   }, [p]);
@@ -96,7 +113,7 @@ export function VqeLab({ initialPreset }: { initialPreset?: string }) {
   const [step, setStep] = useState(0);
   const [playing, setPlaying] = useState(false);
   const variant = preset.variants[variantIndex];
-  const { runs, energies, exact, reference } = useRuns(preset, variant);
+  const { runs, energies, exact, reference, spinAligned } = useRuns(preset, variant);
   const curve = useCurve(preset);
 
   const steps = preset.steps;
@@ -124,6 +141,7 @@ export function VqeLab({ initialPreset }: { initialPreset?: string }) {
     refGap: reference ? Math.abs(energy - reference.energy) : null,
     playgroundGap:
       variant.playgroundEnergy === undefined ? null : Math.abs(energy - variant.playgroundEnergy),
+    spinGap: spinAligned ? Math.abs(energy - spinAligned.energy) : null,
   });
   const unit = preset.unit ? ` ${preset.unit}` : "";
 
@@ -294,6 +312,7 @@ export function VqeLab({ initialPreset }: { initialPreset?: string }) {
           step={step}
           exact={exact}
           reference={reference}
+          spinAligned={spinAligned}
           digits={digits}
           onSeek={(k) => {
             setPlaying(false);
