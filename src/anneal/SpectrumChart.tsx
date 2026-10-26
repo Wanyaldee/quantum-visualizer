@@ -2,6 +2,7 @@ import { useState, type MouseEvent } from "react";
 import { narrowestGap, type SpectrumPoint } from "../quantum/anneal";
 import { pct } from "../ui/phase";
 import { Tooltip } from "../ui/Tooltip";
+import { Word } from "../ui/Word";
 
 const W = 560;
 const H = 300;
@@ -157,7 +158,8 @@ export function SpectrumChart({
               {pt.levels.slice(0, 4).map((lv, j) => (
                 <span key={j}>
                   {j === 0 ? "一番下" : `下から${j + 1}段目`}
-                  {lv.degeneracy > 1 ? `（${lv.degeneracy}重）` : ""}: {pct(pops[shown][j])}
+                  {lv.degeneracy > 1 ? `（${lv.degeneracy}つが同じ高さ）` : ""}:{" "}
+                  {pct(pops[shown][j])}
                 </span>
               ))}
               <em>クリックでこの時点へ</em>
@@ -166,7 +168,11 @@ export function SpectrumChart({
         </div>
       </div>
       <p className="chart-foot">
-        線は「その時点で取りうるエネルギー」、青い丸が状態の居場所（大きさ＝その段にいる確率）です。緑の線は最後に正解へつながる段。
+        線は「その時点で取りうる
+        <Word id="energy" />
+        」（<Word id="level">準位</Word>
+        ）、青い丸が状態の居場所（大きさ＝その段にいる確率）です。緑の線は最後に正解（
+        <Word id="ground">一番低いエネルギー</Word>）へつながる段。
       </p>
     </figure>
   );

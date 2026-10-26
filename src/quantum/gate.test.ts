@@ -25,6 +25,21 @@ describe("gate simulator", () => {
     expect(final("superdense")[3]).toBeCloseTo(1);
   });
 
+  it("interference preset: H makes a superposition, H→H returns to 0, H→Z→H gives 1", () => {
+    const p = CIRCUIT_PRESETS.find((c) => c.id === "interference")!;
+    const [, h1, hh, h3, hz, hzh] = simulateSteps(p.n, p.gates).map((s) =>
+      Array.from(probabilities(s)),
+    );
+    for (const half of [h1, h3, hz]) {
+      expect(half[0]).toBeCloseTo(0.5);
+      expect(half[1]).toBeCloseTo(0.5);
+    }
+    expect(hh[0]).toBeCloseTo(1);
+    expect(hzh[1]).toBeCloseTo(1);
+    // The title must not read as if H itself were interference.
+    expect(p.title.startsWith("重ね合わせと干渉")).toBe(true);
+  });
+
   it("every preset has one note per gate", () => {
     for (const p of CIRCUIT_PRESETS) expect(p.notes.length).toBe(p.gates.length);
   });

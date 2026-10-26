@@ -7,6 +7,7 @@ import { DistributionBars } from "./DistributionBars";
 import { ProblemGraph } from "./ProblemGraph";
 import { SpectrumChart } from "./SpectrumChart";
 import { SuccessChart } from "./SuccessChart";
+import { Word } from "../ui/Word";
 
 interface TimeAxis {
   /** The lab's T grid and range, so the guide's chart has the same axis as the lab's. */
@@ -107,8 +108,11 @@ function useSlides({ Ts, tMin, tMax }: TimeAxis): Slide[] {
         ),
         body: (
           <p>
-            横軸が
-            s、縦軸がエネルギー。線は「その時点で取りうるエネルギーの段」、青い丸は状態がどの段にどれだけいるか（大きさ＝確率）です。グラフをクリックすると、その
+            横軸が s、縦軸が
+            <Word id="energy" />
+            （答えの点数）。線は「その時点で取りうるエネルギーの段（
+            <Word id="level">準位</Word>
+            ）」、青い丸は状態がどの段にどれだけいるか（大きさ＝確率）です。グラフをクリックすると、その
             s へ飛べます。
           </p>
         ),

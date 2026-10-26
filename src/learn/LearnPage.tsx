@@ -1,5 +1,7 @@
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { BasicsSlides } from "./BasicsSlides";
+import { Chapter } from "./Chapter";
+import { Glossary, MoreToLearn } from "./GlossarySection";
 import {
   PLAYGROUND_EXAMPLES,
   PLAYGROUND_URL,
@@ -43,8 +45,7 @@ function Term({ title, children }: { title: string; children: ReactNode }) {
 
 function Basics() {
   return (
-    <section className="learn-section" aria-labelledby="basics">
-      <h2 id="basics">最低限の知識</h2>
+    <>
       <p className="lede">
         使用例を読むのに必要なことだけを、このアプリの図が動く様子と一緒にまとめました。自動で進むアニメーションの横に、いま何が起きているかの説明が出ます。もっと丁寧な説明は
         playground の <a href={playgroundDoc("docs/basics.md")}>量子コンピューティングの基礎</a>{" "}
@@ -86,7 +87,7 @@ function Basics() {
           </p>
         </Term>
       </div>
-    </section>
+    </>
   );
 }
 
@@ -127,14 +128,73 @@ function ExampleCard({ ex }: { ex: PlaygroundExample }) {
   );
 }
 
-export function LearnPage() {
+const CHAPTERS = ["glossary", "basics", "examples", "more"] as const;
+type ChapterId = (typeof CHAPTERS)[number];
+
+/** The chapter that holds a `#learn/<focus>` target: a chapter id, or a glossary word. */
+function chapterOf(focus: string | undefined): ChapterId | null {
+  if (!focus) return null;
+  if (focus.startsWith("term-")) return "glossary";
+  return CHAPTERS.find((c) => c === focus) ?? null;
+}
+
+/**
+ * `focus` is the element id after `#learn/`: a chapter (`examples`) or a glossary word
+ * (`term-phase`). Chapters start closed so the page reads as a table of contents; the one
+ * holding the focus starts open.
+ */
+export function LearnPage({ focus }: { focus?: string }) {
+  const [open, setOpen] = useState<ReadonlySet<ChapterId>>(() => {
+    const c = chapterOf(focus);
+    return new Set(c ? [c] : []);
+  });
+  const toggle = (id: ChapterId) => (isOpen: boolean) =>
+    setOpen((prev) => {
+      if (prev.has(id) === isOpen) return prev;
+      const next = new Set(prev);
+      if (isOpen) next.add(id);
+      else next.delete(id);
+      return next;
+    });
+
+  useEffect(() => {
+    if (!focus) return;
+    const block = focus.startsWith("term-") ? "center" : "start";
+    document.getElementById(focus)?.scrollIntoView({ block });
+  }, [focus]);
+
+  const chapter = (id: ChapterId) => ({ id, open: open.has(id), onToggle: toggle(id) });
+
   return (
     <div className="lab learn">
-      <section className="stage">
+      <div className="chapter-tools">
+        <p className="panel-text">見たい章を開いてください。</p>
+        <button type="button" className="btn" onClick={() => setOpen(new Set(CHAPTERS))}>
+          すべて開く
+        </button>
+        <button type="button" className="btn" onClick={() => setOpen(new Set())}>
+          すべてたたむ
+        </button>
+      </div>
+      <Chapter
+        {...chapter("glossary")}
+        title="まず、言葉の意味"
+        hint="画面に出てくる言葉を、数式なしでひとことずつ説明します"
+      >
+        <Glossary focus={focus} />
+      </Chapter>
+      <Chapter
+        {...chapter("basics")}
+        title="最低限の知識"
+        hint="重ね合わせ・干渉・もつれ・QUBO などを、図が動くスライドで順に見ます"
+      >
         <Basics />
-      </section>
-      <section className="stage learn-section" aria-labelledby="examples">
-        <h2 id="examples">blueqat-mcp-playground の使用例</h2>
+      </Chapter>
+      <Chapter
+        {...chapter("examples")}
+        title="blueqat-mcp-playground の使用例"
+        hint={`全 ${PLAYGROUND_EXAMPLES.length} 例と、それぞれのふるまいを見るリンク`}
+      >
         <p className="lede">
           <a href={PLAYGROUND_URL}>blueqat-mcp-playground</a> の全
           {PLAYGROUND_EXAMPLES.length} 例です。「使用例を読む」で実際に blueqat MCP
@@ -151,7 +211,10 @@ export function LearnPage() {
             </ol>
           </div>
         ))}
-      </section>
+      </Chapter>
+      <Chapter {...chapter("more")} title="もっと知りたい人へ" hint="Qni など、次に読む教材">
+        <MoreToLearn />
+      </Chapter>
     </div>
   );
 }

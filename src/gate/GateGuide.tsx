@@ -5,6 +5,7 @@ import { probabilities, sample, type Gate } from "../quantum/gate";
 import { SlideDeck, type Slide } from "../ui/SlideDeck";
 import { PhaseLegend } from "./AmplitudeDials";
 import { CircuitDiagram } from "./CircuitDiagram";
+import { Word } from "../ui/Word";
 
 const BELL: Gate[] = [h(0), cx(0, 1)];
 // RY(π/3) leaves |0⟩ with cos²(π/6) = 75 % and |1⟩ with 25 %.
@@ -46,7 +47,7 @@ function useSlides(): Slide[] {
           {
             view: <CircuitAt gates={BELL} step={2} />,
             caption:
-              "●から線が伸びて ⊕ につながる形が CNOT（●が 1 のときだけ ⊕ 側を反転）。回路図の列をクリックすると、その時点へ飛べます。",
+              "●から線が伸びて ⊕ につながる形が CNOT（●が 1 のときだけ ⊕ 側の 0 と 1 を入れ替える）。回路図の列をクリックすると、その時点へ飛べます。",
           },
         ],
       },
@@ -56,7 +57,8 @@ function useSlides(): Slide[] {
           <p>
             1つの円が1つの結果（ビット列）です。灰色の輪が 100% の大きさで、塗られた円の
             <strong>面積</strong>
-            が、測ったときにその結果が出る確率。針の向きと色が位相です。
+            が、測ったときにその結果が出る確率。針の向きと色が<Word id="phase">位相</Word>
+            （振幅の「向き」）です。
           </p>
         ),
         school: (

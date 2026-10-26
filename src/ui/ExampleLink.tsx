@@ -10,7 +10,7 @@ export function ExampleLink({ no, solvedBy }: { no: number; solvedBy?: "qaoa" })
           （playground では同じ QUBO を QAOA で解いています。ここではアニーリングで解きます）
         </span>
       )}
-      <a href="#learn">使用例の一覧と基礎知識</a>
+      <a href="#learn/examples">使用例の一覧と基礎知識</a>
     </p>
   );
 }

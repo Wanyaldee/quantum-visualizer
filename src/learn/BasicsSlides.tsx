@@ -82,9 +82,10 @@ function useSlides(): Slide[] {
         ),
         body: (
           <p>
-            普通のビットは 0 か 1 のどちらか。量子ビットは 0 と 1 を<strong>同時に</strong>
-            持てます。n 個あれば 2<sup>n</sup>{" "}
-            通りの状態が、それぞれ「振幅」という重みつきで重なります。
+            普通のビットは 0 か 1 のどちらか。量子ビットは「0 になる可能性」と「1 になる可能性」を
+            <strong>両方</strong>持てます。これが重ね合わせという
+            <strong>状態</strong>です。n 個あれば 2<sup>n</sup>{" "}
+            通りの組み合わせの可能性を、それぞれ「振幅」という重みつきで持ちます。
           </p>
         ),
         frames: [
@@ -101,9 +102,9 @@ function useSlides(): Slide[] {
             view: <Dials n={1} gates={[h(0)]} />,
             caption: (
               <>
-                H ゲートをかけると、<span className="ket">|0⟩</span> と{" "}
-                <span className="ket">|1⟩</span> の円が半分ずつに。0 と 1 が 50% ずつの重みで
-                <strong>同時に</strong>存在しています。
+                重ね合わせを作る H ゲートをかけると、<span className="ket">|0⟩</span> と{" "}
+                <span className="ket">|1⟩</span> の円が半分ずつに。0 になる可能性と 1
+                になる可能性を、50% ずつ<strong>両方</strong>持っています。
               </>
             ),
           },
@@ -179,6 +180,32 @@ function useSlides(): Slide[] {
         ],
       },
       {
+        title: "アダマールゲート（H）は何をするのか",
+        body: (
+          <p>
+            H は<strong>重ね合わせを作る</strong>
+            ゲートです。重ね合わせにもう一度かけると元に戻ります。そのとき何が起きているかは、次の次の「干渉」で見ます。
+          </p>
+        ),
+        link: { href: "#gate/interference", label: "ゲート式で1ステップずつ見る" },
+        frames: [
+          {
+            view: <BeforeAfter n={1} before={[]} gate={h(0)} />,
+            caption: "0 に H：0 と 1 の円が同じ大きさになります。測ると 0 と 1 が半々で出ます。",
+          },
+          {
+            view: <BeforeAfter n={1} before={[x(0)]} gate={h(0)} />,
+            caption:
+              "1 に H：やはり半々の重ね合わせ。ただし 1 の針だけが逆向きになります（確率はどちらも 50%）。",
+          },
+          {
+            view: <BeforeAfter n={1} before={[h(0)]} gate={h(0)} />,
+            caption:
+              "重ね合わせにもう一度 H：元の 0 に戻ります。50% ずつだったのに、必ず 0 が出る状態です。",
+          },
+        ],
+      },
+      {
         title: "測定",
         kosen: (
           <p>
@@ -197,8 +224,8 @@ function useSlides(): Slide[] {
         ),
         body: (
           <p>
-            測ると重ね合わせは壊れ、確率に従ってどれか<strong>1つ</strong>
-            だけが出ます。だから同じ回路を何百回も実行（shots）して、出た回数（counts）で確率を見ます。
+            測ると重ね合わせは消え、確率に従ってどれか<strong>1つ</strong>
+            だけが出ます。だから同じ回路を何百回もくり返して測り（ショット、shots）、出た回数（counts）で確率を見ます。
           </p>
         ),
         frames: [
@@ -223,7 +250,7 @@ function useSlides(): Slide[] {
         ],
       },
       {
-        title: "干渉",
+        title: "干渉（ゲートではなく現象）",
         kosen: (
           <p>
             <b>3年「物理学Ⅱ」重ね合わせの原理・波の干渉・ヤングの実験</b>、
@@ -239,7 +266,11 @@ function useSlides(): Slide[] {
         ),
         body: (
           <p>
-            向きのそろった振幅は強め合い、逆向きは打ち消し合います。量子アルゴリズムの仕事は、
+            干渉は、振幅どうしが足し合わさるときに起きる<strong>現象</strong>
+            です。同じ向きなら強め合い、逆向きなら打ち消し合います。
+            <strong>重ね合わせは状態、干渉は現象</strong>
+            。重ね合わせにもう一度 H
+            をかけたときに、この足し合わせが起きます。量子アルゴリズムの仕事は、
             <strong>正解の振幅を強め、不正解を打ち消す</strong>
             ように向きをそろえることです（グローバー探索がその典型）。
           </p>
@@ -248,7 +279,11 @@ function useSlides(): Slide[] {
         frames: (
           [
             [[], [], "上の段（H → H）と下の段（H → Z → H）を並べて比べます。どちらも |0⟩ から。"],
-            [[h(0)], [h(0)], "H で半々に。この時点では上と下はまったく同じ状態です。"],
+            [
+              [h(0)],
+              [h(0)],
+              "1回目の H で重ね合わせを作ります。この時点では上と下はまったく同じ状態です。",
+            ],
             [
               [h(0)],
               [h(0), z(0)],
@@ -257,7 +292,7 @@ function useSlides(): Slide[] {
             [
               [h(0), h(0)],
               [h(0), z(0), h(0)],
-              "もう一度 H。上は |1⟩ の成分が打ち消し合って |0⟩ が 100%、下は逆に |1⟩ が 100%。確率は同じでも、向きの違いが答えを決めました。",
+              "2回目の H で振幅が足し合わされ、干渉が起きます。上は「1 になる分」が逆向きどうしで打ち消し合って |0⟩ が 100%、下は逆に「0 になる分」が打ち消し合って |1⟩ が 100%。確率は同じでも、針の向きの違いが答えを決めました。",
             ],
           ] satisfies [Gate[], Gate[], string][]
         ).map(([top, bottom, caption]) => ({
@@ -397,19 +432,26 @@ function useSlides(): Slide[] {
           <>
             <ul className="gate-list">
               <li>
-                <code>h</code> 0 と 1 を半々に重ねる（重なっていれば干渉させて戻す）
+                <code>h</code> 重ね合わせを作る（0 や 1 を、0 と 1
+                が半々の状態にする）。重ね合わせにもう一度かけると元に戻る
               </li>
               <li>
-                <code>x</code> 0 と 1 を入れ替える
+                <code>x</code> 0 と 1 を入れ替える（普通のコンピュータの NOT と同じ）
               </li>
               <li>
-                <code>z</code> 1 の向きを反転（確率は変わらない）
+                <code>y</code> 0 と 1 を入れ替え、同時に針の向き（位相）も変える
               </li>
               <li>
-                <code>cx</code> 制御が 1 のときだけ相手を反転（CNOT）
+                <code>z</code> 1 の針の向きだけを逆にする（確率は変わらない）
               </li>
               <li>
-                <code>cz</code> / <code>ccz</code> 全部 1 のときだけ向きを反転
+                <code>s</code> / <code>t</code> 1 の針を 90° / 45° 回す
+              </li>
+              <li>
+                <code>cx</code> 制御側が 1 のときだけ、相手の 0 と 1 を入れ替える（CNOT）
+              </li>
+              <li>
+                <code>cz</code> / <code>ccz</code> 全部 1 のときだけ針を逆向きにする
               </li>
             </ul>
             <p className="term-foot">
@@ -424,7 +466,8 @@ function useSlides(): Slide[] {
           },
           {
             view: <BeforeAfter n={1} before={[]} gate={h(0)} />,
-            caption: "h：1つの円が、同じ大きさ・同じ向きの2つの円に分かれます。",
+            caption:
+              "h：重ね合わせを作ります。1つの円が、同じ大きさ・同じ向きの2つの円に分かれます。",
           },
           {
             view: <BeforeAfter n={1} before={[h(0)]} gate={z(0)} />,
@@ -493,10 +536,11 @@ function useSlides(): Slide[] {
         ),
         body: (
           <p>
-            どちらも QUBO を解く方法です。QAOA はゲート回路を数段重ねて近づける方法（playground の
-            run_qaoa）、アニーリングは「簡単な問題」から「解きたい問題」へゆっくり切り替える方法（このアプリの
-            <a href="#anneal">アニーリング</a>）。どちらも
-            <strong>必ず最適解が出るとは限りません</strong>。
+            どちらも QUBO
+            を解く方法です。アニーリングは「答えの分かっている簡単な問題」から「解きたい問題」へゆっくり切り替える方法（このアプリの
+            <a href="#anneal">アニーリング</a>）、QAOA
+            はその切り替えをゲート回路を数段重ねてまねる方法（playground の run_qaoa）。どちらも
+            <strong>必ず最適解が出るとは限らない</strong>（ヒューリスティックな）方法です。
           </p>
         ),
         link: { href: "#anneal/maxcut", label: "アニーリングで速さを変えてみる" },

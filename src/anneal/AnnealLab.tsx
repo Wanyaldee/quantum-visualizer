@@ -21,6 +21,8 @@ import { ProblemGraph } from "./ProblemGraph";
 import { SpectrumChart } from "./SpectrumChart";
 import { SuccessChart } from "./SuccessChart";
 import { ExampleLink } from "../ui/ExampleLink";
+import { termsIn } from "../learn/glossary";
+import { TermHints, Word } from "../ui/Word";
 import { rememberPreset } from "../ui/route";
 
 const POINTS = 101;
@@ -122,6 +124,7 @@ export function AnnealLab({ initialPreset }: { initialPreset?: string }) {
   };
 
   const s = sp[sIndex].s;
+  const note = phaseNote(s, gapS);
   const top = [...probs.keys()].sort((a, b) => probs[b] - probs[a]).slice(0, 3);
 
   return (
@@ -148,6 +151,14 @@ export function AnnealLab({ initialPreset }: { initialPreset?: string }) {
           <h2>{problem.title}</h2>
           <p className="lede">{problem.summary}</p>
           {problem.example && <ExampleLink no={problem.example} solvedBy="qaoa" />}
+          <TermHints text={problem.summary} />
+          <p className="panel-text">
+            どの題材も、答えの良し悪しを点数表（
+            <Word id="qubo" />
+            ）で書いてあります。点数が一番低い答えが最適解です。ここではそれを
+            <Word id="annealing" />
+            で解き、途中の様子を見ます。
+          </p>
         </header>
 
         <SlideGuide summary="この画面の見方（スライドで説明）">
@@ -169,6 +180,9 @@ export function AnnealLab({ initialPreset }: { initialPreset?: string }) {
               value={sliderFromT(T)}
               onChange={(e) => setT(tFromSlider(Number(e.target.value)))}
             />
+            <p className="control-hint">
+              簡単な問題から解きたい問題へ切り替えるのにかける時間。大きいほどゆっくり切り替えます。
+            </p>
             <div className="speed-row">
               {SPEEDS.map((sp) => (
                 <button
@@ -198,6 +212,10 @@ export function AnnealLab({ initialPreset }: { initialPreset?: string }) {
                 setSIndex(Number(e.target.value));
               }}
             />
+            <p className="control-hint">
+              s = 0 は答えの分かっている簡単な問題だけ、s = 1
+              は解きたい問題だけ。途中はその2つを混ぜたものです。
+            </p>
             <div className="speed-row">
               <button
                 type="button"
@@ -214,8 +232,9 @@ export function AnnealLab({ initialPreset }: { initialPreset?: string }) {
           </div>
         </div>
         <p className="note" aria-live="polite">
-          {phaseNote(s, gapS)}
+          {note}
         </p>
+        <TermHints text={note} skip={termsIn(problem.summary).map((t) => t.id)} />
 
         <div className="anneal-grid">
           <SpectrumChart
@@ -260,7 +279,10 @@ export function AnnealLab({ initialPreset }: { initialPreset?: string }) {
             ))}
           </ol>
           <p className="panel-foot">
-            実機のアニーリングマシンは、測るたびにこの確率どおりにどれか1つの答えを返します。だから何回も実行して、一番良いものを選びます。
+            実機のアニーリングマシンは、<Word id="measurement">測る</Word>
+            たびにこの確率どおりにどれか1つの答えを返します。最適解が必ず出るとは限らない（
+            <Word id="heuristic" />
+            な）方法なので、何回も実行して一番良いものを選びます。
           </p>
         </div>
 

@@ -58,7 +58,7 @@ export default function App() {
         {/* Keyed by visit so following a link to a preset starts that lab fresh. */}
         {mode === "gate" && <GateLab key={visit} initialPreset={preset} />}
         {mode === "anneal" && <AnnealLab key={visit} initialPreset={preset} />}
-        {mode === "learn" && <LearnPage />}
+        {mode === "learn" && <LearnPage key={visit} focus={preset} />}
       </main>
       <footer className="colophon">
         計算はすべてこのブラウザの中で行う、ノイズのない理想的なシミュレーションです。実機との違いは{" "}

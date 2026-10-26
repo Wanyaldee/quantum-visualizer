@@ -810,6 +810,70 @@ textarea {
   font-size: 1.5rem;
 }
 
+/* Collapsible chapters; closed, their summaries read as the table of contents. */
+
+.chapter-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.chapter-tools p {
+  margin: 0 auto 0 0;
+}
+
+@media (max-width: 480px) {
+  .chapter-tools p {
+    flex-basis: 100%;
+  }
+}
+
+.chapter details {
+  scroll-margin-top: 16px;
+}
+
+.chapter summary {
+  position: relative;
+  display: grid;
+  gap: 4px;
+  padding-right: 2.2em;
+  cursor: pointer;
+  list-style: none;
+}
+
+.chapter summary::-webkit-details-marker {
+  display: none;
+}
+
+.chapter summary::after {
+  content: "＋";
+  position: absolute;
+  right: 0;
+  top: 0.1em;
+  font-size: 1.4rem;
+  color: var(--ink-3);
+}
+
+.chapter details[open] > summary::after {
+  content: "−";
+}
+
+.chapter summary h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.chapter-hint {
+  font-size: 0.9rem;
+  color: var(--ink-3);
+}
+
+.chapter-body {
+  margin-top: 16px;
+}
+
 .terms {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
@@ -1189,6 +1253,132 @@ textarea {
 
 .tooltip .tip-answer {
   color: color-mix(in oklab, var(--answer) 70%, white);
+}
+
+/* ---------- jargon: inline words, per-sentence hints, glossary ---------- */
+
+.word {
+  position: relative;
+  color: inherit;
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+}
+
+/* Visually hidden (but read by screen readers as part of the link) until hover or focus.
+   A 1px box also keeps the hidden tips from widening the page on phones. */
+.word-tip {
+  position: absolute;
+  left: 0;
+  top: calc(100% + 6px);
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  padding: 8px 10px;
+  background: var(--ink);
+  color: var(--surface);
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: normal;
+  line-height: 1.5;
+  text-align: left;
+  white-space: normal;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.word:focus-visible .word-tip {
+  width: max-content;
+  max-width: min(20em, 80vw);
+  height: auto;
+  clip-path: none;
+}
+
+@media (hover: hover) {
+  .word:hover .word-tip {
+    width: max-content;
+    max-width: min(20em, 80vw);
+    height: auto;
+    clip-path: none;
+  }
+}
+
+.term-hints {
+  margin-top: 8px;
+  font-size: 0.85rem;
+  color: var(--ink-2);
+}
+
+.term-hints summary {
+  cursor: pointer;
+  color: var(--ink-3);
+}
+
+.term-hints dl {
+  display: grid;
+  gap: 6px;
+  margin: 8px 0 0;
+}
+
+.term-hints dt {
+  font-weight: bold;
+}
+
+.term-hints dt a {
+  color: var(--ink);
+}
+
+.term-hints dd {
+  margin: 0;
+}
+
+.control-hint {
+  margin: 4px 0 0;
+  font-size: 0.8rem;
+  color: var(--ink-3);
+}
+
+.glossary-group {
+  margin-top: 20px;
+}
+
+.glossary-group h3 {
+  font-size: 1.05rem;
+}
+
+.glossary {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  gap: 10px;
+  margin: 10px 0 0;
+}
+
+.glossary-item {
+  background: var(--bg);
+  border-radius: 10px;
+  padding: 12px 14px;
+  scroll-margin: 80px;
+}
+
+.glossary-item[data-focus] {
+  outline: 2px solid var(--focus);
+}
+
+.glossary-item dt {
+  font-weight: bold;
+}
+
+.glossary-item dd {
+  margin: 4px 0 0;
+  font-size: 0.9rem;
+  color: var(--ink-2);
+}
+
+.more-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  padding-left: 1.2em;
 }
 
 /* ---------- footer ---------- */

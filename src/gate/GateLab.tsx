@@ -8,6 +8,8 @@ import { GateEditor } from "./GateEditor";
 import { GateGuide } from "./GateGuide";
 import { MeasureBars } from "./MeasureBars";
 import { ExampleLink } from "../ui/ExampleLink";
+import { termsIn } from "../learn/glossary";
+import { TermHints, Word } from "../ui/Word";
 import { rememberPreset } from "../ui/route";
 
 const SHOTS = 1000;
@@ -43,7 +45,7 @@ function describeGate(g: Gate): string {
   const deg = g.params ? `${Math.round((g.params[0] * 180) / Math.PI)}°` : "";
   switch (g.gate) {
     case "h":
-      return `H を ${q[0]} に：0 と 1 を同じ大きさで重ね合わせる（すでに重ね合わせなら、干渉させて戻す）。`;
+      return `H を ${q[0]} に：重ね合わせを作る（0 と 1 が同じ大きさで重なる）。H を2回続けてかけると元に戻る。`;
     case "x":
       return `X を ${q[0]} に：0 と 1 を入れ替える。`;
     case "z":
@@ -100,7 +102,7 @@ export function GateLab({ initialPreset }: { initialPreset?: string }) {
 
   const note =
     step === 0
-      ? "すべての量子ビットが |0⟩ から始まる。円は1つだけ満たされている（必ず 0…0 が出る）。"
+      ? "すべての量子ビットが 0 の状態 |0…0⟩ から始まる。円は1つだけ満たされている（測れば必ず 0…0 が出る）。"
       : (circuit.notes?.[step - 1] ?? describeGate(circuit.gates[step - 1]));
 
   return (
@@ -127,6 +129,7 @@ export function GateLab({ initialPreset }: { initialPreset?: string }) {
           <h2>{circuit.title}</h2>
           <p className="lede">{circuit.summary}</p>
           {circuit.example && <ExampleLink no={circuit.example} />}
+          <TermHints text={circuit.summary} />
         </header>
 
         <SlideGuide summary="この画面の見方（スライドで説明）">
@@ -176,17 +179,28 @@ export function GateLab({ initialPreset }: { initialPreset?: string }) {
         <p className="note" aria-live="polite">
           {note}
         </p>
+        <TermHints text={note} skip={termsIn(circuit.summary).map((t) => t.id)} />
 
         <div className="state-grid">
           <div>
             <h3 className="panel-title">いまの状態</h3>
+            <p className="panel-text">
+              0 と 1 の組み合わせごとに円が1つあります（全体を
+              <Word id="statevector" />
+              と呼びます）。円の大きさが<Word id="amplitude">振幅</Word>
+              の大きさ（＝測ったときの出やすさ）、針の向きが
+              <Word id="phase">位相</Word>です。
+            </p>
             <AmplitudeDials state={current} n={circuit.n} />
             <PhaseLegend />
           </div>
           <div className="measure-panel">
             <h3 className="panel-title">ここで測ると</h3>
             <p className="panel-text">
-              測ると重ね合わせは壊れ、どれか1つの結果だけが出ます。何回も測って、円の大きさどおりに出るか確かめましょう。
+              <Word id="measurement">測る</Word>と<Word id="superposition">重ね合わせ</Word>
+              は消え、どれか1つの結果だけが出ます。1回では1つしか分からないので、同じ回路を何回もくり返して測り（
+              <Word id="shots">ショット</Word>
+              ）、円の大きさどおりに出るか確かめましょう。
             </p>
             <button
               type="button"
