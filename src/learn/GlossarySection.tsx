@@ -1,3 +1,4 @@
+import { VQE_REFERENCES } from "../vqe/references";
 import { GLOSSARY, type GlossaryGroup } from "./glossary";
 
 const QNI = "https://qniapp.github.io/qni/";
@@ -6,6 +7,7 @@ const GLOSSARY_GROUPS: { id: GlossaryGroup; title: string }[] = [
   { id: "common", title: "どちらの方式にも出てくる言葉" },
   { id: "gate", title: "ゲート式の言葉" },
   { id: "anneal", title: "アニーリング・最適化の言葉" },
+  { id: "vqe", title: "VQE の言葉" },
 ];
 
 /** Every word the labs link to; `#learn/term-<id>` scrolls here. */
@@ -66,6 +68,14 @@ export function MoreToLearn() {
         <li>
           <a href={`${QNI}h_gate.html`}>H ゲート</a>
         </li>
+      </ul>
+      <p className="panel-text">VQE をもっと知りたい人へ（VQE の画面の説明の参考文献）：</p>
+      <ul className="more-links">
+        {VQE_REFERENCES.map((r) => (
+          <li key={r.href}>
+            <a href={r.href}>{r.label}</a>
+          </li>
+        ))}
       </ul>
     </>
   );

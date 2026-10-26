@@ -25,7 +25,7 @@ const GROUPS: { id: ExampleGroup; title: string; lede: string }[] = [
   {
     id: "vqe",
     title: "エネルギー計算（VQE）",
-    lede: "run_vqe で一番低いエネルギーを探す例。いまのところ、このアプリでは再現できません。",
+    lede: "run_vqe で一番低いエネルギーを探す例。つまみを回してエネルギーが下がっていく様子を見られます。",
   },
   {
     id: "workshop",
@@ -33,6 +33,8 @@ const GROUPS: { id: ExampleGroup; title: string; lede: string }[] = [
     lede: "生活・経営・研究の割り当てや選択の問題。どれも古典的な方法で一瞬で解ける規模です。",
   },
 ];
+
+const MODE_NAMES = { gate: "ゲート式", anneal: "アニーリング", vqe: "VQE" } as const;
 
 function Term({ title, children }: { title: string; children: ReactNode }) {
   return (
@@ -66,7 +68,8 @@ function Basics() {
       <div className="terms">
         <Term title="VQE">
           <p>
-            パラメータつきの回路でエネルギーを測り、古典コンピュータがパラメータを直す、をくり返して一番低いエネルギーを探す方法。分子や物質の計算に使います。
+            つまみ（パラメータ）つきの回路で状態を作ってエネルギーを測り、普通のコンピュータがつまみを回す、をくり返して一番低いエネルギーを探す方法。分子や物質の計算に使います。
+            <a href="#vqe">VQE でつまみが回る様子を見る</a>
           </p>
         </Term>
         <Term title="シミュレータと実機">
@@ -113,7 +116,7 @@ function ExampleCard({ ex }: { ex: PlaygroundExample }) {
           <a href={playgroundDoc(`examples/${ex.file}`)}>使用例を読む</a>
           {ex.view && (
             <a className="btn btn-primary" href={viewHash(ex.view)}>
-              ふるまいを見る（{ex.view.mode === "gate" ? "ゲート式" : "アニーリング"}）
+              ふるまいを見る（{MODE_NAMES[ex.view.mode]}）
             </a>
           )}
           {ex.related && (

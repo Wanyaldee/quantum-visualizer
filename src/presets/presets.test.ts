@@ -3,10 +3,13 @@ import { groundIndices, MAX_SPINS, quboEnergies } from "../quantum/anneal";
 import { basisLabel, MAX_QUBITS, probabilities, simulateSteps } from "../quantum/gate";
 import { CIRCUIT_PRESETS } from "./circuits";
 import { PLAYGROUND_EXAMPLES } from "./examples";
+import { VQE_PRESETS } from "./hamiltonians";
 import { ANNEAL_PRESETS } from "./problems";
 
-const presetsFor = (mode: "gate" | "anneal") =>
-  mode === "gate" ? CIRCUIT_PRESETS : ANNEAL_PRESETS;
+const presetsFor = (
+  mode: "gate" | "anneal" | "vqe",
+): { id: string; example?: number; title: string }[] =>
+  ({ gate: CIRCUIT_PRESETS, anneal: ANNEAL_PRESETS, vqe: VQE_PRESETS })[mode];
 
 const finalProbs = (id: string) => {
   const p = CIRCUIT_PRESETS.find((c) => c.id === id)!;
@@ -48,6 +51,7 @@ describe("playground example catalog", () => {
   it("every preset fits the simulators", () => {
     for (const p of CIRCUIT_PRESETS) expect(p.n).toBeLessThanOrEqual(MAX_QUBITS);
     for (const p of ANNEAL_PRESETS) expect(p.n).toBeLessThanOrEqual(MAX_SPINS);
+    for (const p of VQE_PRESETS) expect(p.n).toBeLessThanOrEqual(MAX_QUBITS);
   });
 });
 

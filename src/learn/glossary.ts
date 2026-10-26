@@ -1,7 +1,7 @@
 // Definitions follow blueqat-mcp-playground's docs/basics.md ("まず、言葉の意味"), and like
 // Qni they explain a state as "disc size = how likely, needle direction = phase", no formulas.
 
-export type GlossaryGroup = "common" | "gate" | "anneal";
+export type GlossaryGroup = "common" | "gate" | "anneal" | "vqe";
 
 export interface GlossaryEntry {
   id: string;
@@ -255,11 +255,74 @@ export const GLOSSARY: GlossaryEntry[] = [
   },
   {
     id: "vqe",
-    word: "VQE",
+    word: "VQE（変分量子固有値ソルバー）",
     short:
-      "回路でエネルギーを測り、普通のコンピュータが回路のつまみ（パラメータ）を直す、をくり返して一番低いエネルギーを探す方法。分子の計算に使われます。",
-    group: "anneal",
+      "量子コンピュータがつまみ付きの回路で状態を作ってエネルギーを測り、普通のコンピュータがつまみを回す。これをくり返して一番低いエネルギーを探す方法。分子の計算に使われます。",
+    group: "vqe",
     aliases: ["VQE"],
+  },
+  {
+    id: "parameter",
+    word: "パラメータ（つまみ）",
+    short: "回路の中の回転ゲートの角度。ラジオのつまみのように回して、作る状態を少しずつ変えます。",
+    group: "vqe",
+    aliases: ["つまみ", "パラメータ"],
+  },
+  {
+    id: "ansatz",
+    word: "アンザッツ（試しの回路の形）",
+    short:
+      "つまみ付きの回路の「形」。この形で作れる状態の中から一番良いものを探します。形が答えの状態を作れないと、どれだけつまみを回しても届きません。",
+    group: "vqe",
+    aliases: ["アンザッツ"],
+  },
+  {
+    id: "expectation",
+    word: "期待値",
+    short:
+      "何回も測ったときの平均。1回測るだけでは結果が1つしか出ないので、エネルギーは何回も測った平均で決めます。",
+    group: "vqe",
+    aliases: ["期待値"],
+  },
+  {
+    id: "variational",
+    word: "変分原理",
+    short:
+      "どんな状態のエネルギーを測っても、本当の一番低いエネルギーより下にはならない、という決まり。だから、下がれば下がるほど本当の答えに近づいていると分かります。",
+    group: "vqe",
+    aliases: ["変分"],
+  },
+  {
+    id: "gradient",
+    word: "勾配（坂の向き）",
+    short:
+      "つまみを少し回したとき、エネルギーが上がるか下がるか。坂の向きが分かれば、下る方へつまみを回せます。",
+    group: "vqe",
+    aliases: ["勾配", "坂"],
+  },
+  {
+    id: "local-min",
+    word: "局所解（くぼみ）",
+    short:
+      "まわりのどこよりも低いのに、一番低い所ではない場所。谷底に着いたと思ったら、実は山の途中の小さなくぼみだった、という状態です。",
+    group: "vqe",
+    aliases: ["局所解", "くぼみ"],
+  },
+  {
+    id: "hf",
+    word: "HF（平均場近似）",
+    short:
+      "電子1つ1つが「ほかの電子の平均的な影響」だけを感じると考える、昔からある近似の計算方法。だいたい合いますが、電子どうしがよけ合う効果を取りこぼすので、本当の値より少し高くなります。",
+    group: "vqe",
+    aliases: ["HF", "平均場"],
+  },
+  {
+    id: "exact",
+    word: "厳密解（FCI）",
+    short:
+      "近似をせず、すべての可能性を調べて求めた本当の答え。小さな分子なら普通のコンピュータでも計算できるので、VQE の答え合わせに使います。",
+    group: "vqe",
+    aliases: ["厳密解", "FCI"],
   },
 ];
 

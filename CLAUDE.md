@@ -2,7 +2,7 @@
 
 このリポジトリは [blueqat-mcp-playground](https://github.com/Wanyaldee/blueqat-mcp-playground)（ローカルでは `../blueqat-mcp-playground`）の姉妹リポジトリです。あちらの `examples/` にある使用例が量子回路やアニーリングで何をしているのかを、ブラウザ上で目に見える形にするためにあります。
 
-- blueqat-mcp-playground に使用例が追加・変更されたら、こちらもそれに合わせる。ゲート式の例は `src/presets/circuits.ts`、アニーリング・QAOA 系の例は `src/presets/problems.ts` にプリセットを追加・更新する。
+- blueqat-mcp-playground に使用例が追加・変更されたら、こちらもそれに合わせる。ゲート式の例は `src/presets/circuits.ts`、アニーリング・QAOA 系の例は `src/presets/problems.ts`、VQE 系の例は `src/presets/hamiltonians.ts` にプリセットを追加・更新する。
 - 使用例に対応するプリセットは、タイトルの末尾に `（例N）` と元の例番号を付ける（例: `ベル状態：2つの量子ビットのもつれ（例1）`）。
 - 新しいプリセットを作るときは、元の例の Markdown を読んで回路や問題設定を写し取る。回路の結果や振る舞いが元の例の説明と食い違わないことを、`src/quantum/*.test.ts` のテストで確かめる。
 - 今のシミュレータでは視覚化しきれない例（量子ビット数が多すぎる、未対応のゲートを使う、など）は無理にプリセットにしない。どこが足りないかをユーザーに伝える。
@@ -18,6 +18,10 @@ Docs are local at `node_modules/vite-plus/docs` or online at https://viteplus.de
 ## Built-in Commands vs Scripts
 
 `vp <name>` runs a built-in command. `vp run <name>` runs a `package.json` script or a `vite.config.ts` task. Scripts cannot overwrite built-ins, so `vp dev` and `vp run dev` may do different things. Check `package.json` and `vite.config.ts` first, and run `vp run <name>` when the project defines a script or task with that name.
+
+## Running Scripts
+
+Run TypeScript and JavaScript files with `vpx <file>`, for example `vpx ./scripts/seed.ts --dry-run`. It handles enums, decorators, JSX, and tsconfig `paths`, so do not add `tsx` or `ts-node` to run scripts. `vpx --watch <file>` reruns the file when a file it uses changes, in place of `tsx watch`. `vp node <file>` runs plain Node.js.
 
 ## Tool Versions
 

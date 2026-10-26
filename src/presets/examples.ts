@@ -6,9 +6,9 @@ export const playgroundDoc = (path: string): string => `${PLAYGROUND_URL}/blob/m
 
 export type ExampleGroup = "circuit" | "optimize" | "vqe" | "workshop";
 
-/** A preset in this app: `#gate/<id>` or `#anneal/<id>`. */
+/** A preset in this app: `#gate/<id>`, `#anneal/<id>` or `#vqe/<id>`. */
 export interface ExampleView {
-  mode: "gate" | "anneal";
+  mode: "gate" | "anneal" | "vqe";
   preset: string;
 }
 
@@ -74,13 +74,7 @@ export const PLAYGROUND_EXAMPLES: PlaygroundExample[] = [
     tools: ["run_vqe"],
     group: "vqe",
     summary: "2量子ビットの磁石の模型で、一番低いエネルギーを変分法で求める。",
-    missing:
-      "VQE は「回路のパラメータを古典コンピュータが少しずつ直す」ループが本体で、このアプリにはそのループがありません。",
-    related: {
-      mode: "anneal",
-      preset: "maxcut",
-      label: "一番低いエネルギーの状態を探す、という点ではアニーリングが近い",
-    },
+    view: { mode: "vqe", preset: "ising" },
   },
   {
     no: 6,
@@ -156,8 +150,9 @@ export const PLAYGROUND_EXAMPLES: PlaygroundExample[] = [
     tools: ["run_vqe"],
     group: "vqe",
     summary: "実際の分子のハミルトニアンを作り、結合長ごとのエネルギーを厳密解と比べる。",
+    view: { mode: "vqe", preset: "h2" },
     missing:
-      "VQE のパラメータ最適化ループがなく、分子のハミルトニアン（パウリ演算子の和）も読み込めません。",
+      "再現しているのは平衡結合長 0.7414 Å の1点だけです。結合長を変えた曲線（1.5 Å で局所解に捕まる様子など）は、各結合長のハミルトニアンが例に載っていないため再現していません。",
   },
   {
     no: 13,

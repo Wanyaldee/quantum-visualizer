@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { AnnealLab } from "./anneal/AnnealLab";
 import { GateLab } from "./gate/GateLab";
 import { LearnPage } from "./learn/LearnPage";
+import { VqeLab } from "./vqe/VqeLab";
 
-type Mode = "gate" | "anneal" | "learn";
+type Mode = "gate" | "anneal" | "vqe" | "learn";
 
 interface Route {
   mode: Mode;
@@ -17,7 +18,7 @@ interface Route {
 // straight into one preset (…/#anneal/team), and the example list can link to each one.
 function routeFromHash(visit = 0): Route {
   const [mode, preset] = location.hash.slice(1).split("/");
-  if (mode === "anneal" || mode === "learn") return { mode, preset, visit };
+  if (mode === "anneal" || mode === "vqe" || mode === "learn") return { mode, preset, visit };
   return { mode: "gate", preset, visit };
 }
 
@@ -48,6 +49,10 @@ export default function App() {
             <span className="mode-name">アニーリング</span>
             <span className="mode-hint">ゆっくり問題に切り替えて、一番低い所に落ち着かせる</span>
           </a>
+          <a href="#vqe" aria-current={mode === "vqe" ? "page" : undefined}>
+            <span className="mode-name">VQE</span>
+            <span className="mode-hint">つまみを回して、一番低いエネルギーを探す</span>
+          </a>
           <a href="#learn" aria-current={mode === "learn" ? "page" : undefined}>
             <span className="mode-name">使用例と基礎</span>
             <span className="mode-hint">playground の全使用例と、読むための最低限の知識</span>
@@ -58,6 +63,7 @@ export default function App() {
         {/* Keyed by visit so following a link to a preset starts that lab fresh. */}
         {mode === "gate" && <GateLab key={visit} initialPreset={preset} />}
         {mode === "anneal" && <AnnealLab key={visit} initialPreset={preset} />}
+        {mode === "vqe" && <VqeLab key={visit} initialPreset={preset} />}
         {mode === "learn" && <LearnPage key={visit} focus={preset} />}
       </main>
       <footer className="colophon">

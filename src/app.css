@@ -25,7 +25,7 @@
 
 .modes {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   margin-top: 24px;
   border-bottom: 2px solid var(--rule);
 }
@@ -1408,6 +1408,184 @@ textarea {
   white-space: nowrap;
 }
 
+/* ---------- VQE ---------- */
+
+.vqe-intro {
+  margin-top: 16px;
+  padding: 14px 18px;
+  background: var(--bg);
+  border-radius: 10px;
+  font-size: 0.92rem;
+  color: var(--ink-2);
+}
+
+.vqe-intro summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.vqe-intro p {
+  margin: 8px 0 0;
+}
+
+.vqe-loop {
+  display: grid;
+  gap: 6px;
+  margin: 10px 0 0;
+  padding-left: 1.4em;
+}
+
+.vqe-boxes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.vqe-box {
+  padding: 10px 14px;
+  background: var(--surface);
+  border-radius: 8px;
+}
+
+.vqe-box h4 {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--ink);
+}
+
+.vqe-controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 32px;
+  margin-top: 20px;
+}
+
+.control-label {
+  font-weight: 500;
+}
+
+.vqe-readout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 24px;
+  margin-top: 16px;
+}
+
+.vqe-chart {
+  margin-top: 16px;
+}
+
+.exact-line {
+  stroke: var(--answer);
+  stroke-width: 2;
+}
+
+.exact-label {
+  fill: var(--answer);
+  font-size: 11px;
+}
+
+.reference-line {
+  stroke: var(--measure);
+  stroke-width: 1.5;
+  stroke-dasharray: 6 4;
+}
+
+.reference-label {
+  fill: var(--measure);
+  font-size: 11px;
+}
+
+.vqe-chart .series {
+  stroke: var(--amp);
+  stroke-width: 2.5;
+}
+
+.series-ghost {
+  fill: none;
+  stroke: var(--ink-3);
+  stroke-width: 1;
+  opacity: 0.35;
+}
+
+.series-ahead {
+  stroke: var(--amp);
+  opacity: 0.25;
+}
+
+.vqe-chart svg {
+  cursor: pointer;
+}
+
+.knob-rows {
+  display: grid;
+  gap: 4px;
+  overflow-x: auto;
+}
+
+.knob-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.knob-q {
+  width: 2.2em;
+  color: var(--ink-3);
+}
+
+.knob-cell {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* The CZ chain between two RY columns. */
+.knob-link {
+  width: 6px;
+  align-self: stretch;
+  margin: 0 6px;
+  background: color-mix(in oklab, var(--amp) 25%, transparent);
+  border-radius: 3px;
+}
+
+.knob {
+  display: grid;
+  justify-items: center;
+}
+
+.knob svg {
+  width: 40px;
+  height: 40px;
+}
+
+.knob-ring {
+  fill: var(--surface);
+  stroke: var(--rule);
+  stroke-width: 2;
+}
+
+.knob-needle {
+  stroke: var(--amp);
+  stroke-width: 3;
+  stroke-linecap: round;
+  transition: transform 120ms linear;
+}
+
+.knob-deg {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--ink-3);
+}
+
+.knobs figcaption {
+  margin-top: 8px;
+  font-size: 0.82rem;
+  color: var(--ink-3);
+}
+
 /* ---------- narrow screens ---------- */
 
 @media (max-width: 820px) {
@@ -1422,6 +1600,8 @@ textarea {
   .state-grid,
   .anneal-grid,
   .anneal-controls,
+  .vqe-controls,
+  .vqe-boxes,
   .slide-grid {
     grid-template-columns: minmax(0, 1fr);
   }
